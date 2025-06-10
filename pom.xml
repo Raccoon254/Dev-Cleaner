@@ -12,18 +12,20 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>5.10.2</junit.version>
+        <javafx.version>21</javafx.version>
+        <main.class>com.kentom.devcleaner.DevCleanerApp</main.class>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>21</version>
+            <version>${javafx.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-            <version>21</version>
+            <version>${javafx.version}</version>
         </dependency>
         <dependency>
             <groupId>org.controlsfx</groupId>
@@ -76,23 +78,100 @@
                     <target>21</target>
                 </configuration>
             </plugin>
+
+            <!-- Create executable JAR -->
             <plugin>
-                <groupId>org.openjfx</groupId>
-                <artifactId>javafx-maven-plugin</artifactId>
-                <version>0.0.8</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.6.0</version>
                 <executions>
                     <execution>
-                        <!-- Default configuration for running with: mvn clean javafx:run -->
-                        <id>default-cli</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
                         <configuration>
-                            <mainClass>com.kentom.devcleaner.DevCleanerApp</mainClass>
-                            <launcher>app</launcher>
-                            <jlinkZipName>app</jlinkZipName>
-                            <jlinkImageName>app</jlinkImageName>
-                            <noManPages>true</noManPages>
-                            <stripDebug>true</stripDebug>
-                            <noHeaderFiles>true</noHeaderFiles>
+                            <archive>
+                                <manifest>
+                                    <mainClass>${main.class}</mainClass>
+                                </manifest>
+                            </archive>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <finalName>${project.artifactId}-${project.version}</finalName>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Build native package with jpackage -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jlink-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <launcher>devcleaner=com.kentom.devcleaner.DevCleanerApp</launcher>
+                    <jlinkZipPath>${project.build.directory}/runtime.zip</jlinkZipPath>
+                    <jlinkImageName>runtime</jlinkImageName>
+                    <noManPages>true</noManPages>
+                    <stripDebug>true</stripDebug>
+                    <compress>2</compress>
+                    <modulePaths>
+                        <modulePath>${project.build.directory}/modules</modulePath>
+                    </modulePaths>
+                    <addModules>
+                        <addModule>javafx.controls</addModule>
+                        <addModule>javafx.fxml</addModule>
+                        <addModule>java.logging</addModule>
+                    </addModules>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>create-runtime</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jlink</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Update jpackage plugin to use custom runtime -->
+            <plugin>
+                <groupId>org.panteleyev</groupId>
+                <artifactId>jpackage-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <configuration>
+                    <name>Dev Cleaner Pro</name>
+                    <appVersion>1.0.1</appVersion>
+                    <vendor>kenTom</vendor>
+                    <copyright>Copyright © 2023 kenTom</copyright>
+                    <icon>src/main/resources/com/kentom/devcleaner/icons/app-icon.icns</icon>
+                    <mainClass>${main.class}</mainClass>
+                    <mainJar>${project.artifactId}-${project.version}.jar</mainJar>
+                    <input>${project.build.directory}</input>
+                    <destination>${project.build.directory}/jpackage</destination>
+
+                    <!-- macOS settings -->
+                    <macPackageIdentifier>com.kentom.devcleaner</macPackageIdentifier>
+                    <macPackageName>Dev Cleaner Pro</macPackageName>
+                    <packageType>dmg</packageType>
+                    <macSign>false</macSign>
+                    <macBundleSigningPrefix></macBundleSigningPrefix>
+
+                    <!-- Use custom runtime -->
+                    <runtimeImage>${project.build.directory}/runtime</runtimeImage>
+
+                    <resourceDir>src/main/deploy/package/macos</resourceDir>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jpackage</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>

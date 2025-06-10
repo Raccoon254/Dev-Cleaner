@@ -112,7 +112,6 @@ public class ProjectsController {
             }
         }
 
-        // Emsure the name is like not more than 2 words
         String[] words = formattedName.toString().split(" ");
         if (words.length > 2) {
             formattedName = new StringBuilder(words[0] + " " + words[1] + "...");

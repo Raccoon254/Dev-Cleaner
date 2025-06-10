@@ -1,0 +1,135 @@
+/* General Font and Root Styling */
+.root {
+    -fx-background-color: linear-gradient(to bottom, #2c3e50, #233140);
+    -fx-padding: 25px;
+    -fx-font-family: "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Title Label */
+.title {
+    -fx-font-size: 32px;
+    -fx-text-fill: #ecf0f1;
+    -fx-font-weight: 700;
+    -fx-padding: 0 0 20px 0;
+}
+
+/* Input Fields and Buttons in the Header */
+.text-field {
+    -fx-background-color: rgba(0, 0, 0, 0.2);
+    -fx-text-fill: #bdc3c7;
+    -fx-font-size: 14px;
+    -fx-border-color: #34495e;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-prompt-text-fill: #7f8c8d;
+    -fx-padding: 10px;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.3), 5, 0, 0, 1);
+}
+
+.text-field:focused {
+    -fx-border-color: #3498db;
+    -fx-effect: dropshadow(gaussian, #3498db, 10, 0, 0, 0);
+}
+
+.button {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-background-radius: 6px;
+    -fx-padding: 10px 22px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 3);
+    -fx-transition: all 0.2s ease-in-out;
+}
+
+.button:hover {
+    -fx-background-color: #2980b9;
+}
+
+/* Progress Indicator Styling */
+.progress-indicator {
+    -fx-progress-color: #3498db;
+}
+
+/* ListView and ListCell Styling */
+.list-view {
+    -fx-background-color: transparent;
+    -fx-padding: 10px 0 0 0;
+}
+
+.list-view .scroll-bar:vertical {
+    -fx-background-color: transparent;
+}
+
+.list-view .scroll-bar:vertical .thumb {
+    -fx-background-color: #34495e;
+    -fx-background-radius: 10px;
+}
+
+.list-cell {
+    -fx-background-color: rgba(255, 255, 255, 0.03);
+    -fx-background-radius: 10px;
+    -fx-padding: 20px;
+    -fx-margin-bottom: 10px; /* This requires a custom flow layout, but provides the idea */
+    -fx-border-color: rgba(255, 255, 255, 0.1);
+    -fx-border-width: 1px;
+    -fx-border-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 15, 0, 0, 4);
+    -fx-transition: all 0.2s ease-in-out;
+}
+
+.list-cell:empty {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-effect: none;
+}
+
+.list-cell:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.07);
+    -fx-border-color: #3498db;
+    -fx-scale-x: 1.01;
+    -fx-scale-y: 1.01;
+}
+
+/* Text Styles within the ListCell */
+.list-cell .project-name {
+    -fx-font-size: 18px;
+    -fx-font-weight: 600;
+    -fx-fill: #ecf0f1;
+}
+
+.list-cell .project-path {
+    -fx-font-size: 12px;
+    -fx-fill: #95a5a6;
+}
+
+.list-cell .project-info {
+    -fx-font-size: 13px;
+    -fx-fill: #1abc9c; /* A nice accent color */
+    -fx-font-weight: 500;
+}
+
+/* Clean Button inside the ListCell */
+.list-cell .button {
+    -fx-background-color: #3e4e60;
+    -fx-text-fill: #ecf0f1;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-padding: 8px 18px;
+}
+
+.list-cell .button:hover {
+    -fx-background-color: #e74c3c; /* Red for destructive action */
+    -fx-text-fill: white;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.list-cell .button:disabled {
+    -fx-opacity: 0.5;
+    -fx-background-color: #2c3e50;
+    -fx-cursor: default;
+    -fx-effect: none;
+}

@@ -1,43 +1,61 @@
 package com.kentom.devcleaner.model;
 
 import com.kentom.devcleaner.util.FileUtils;
-
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Stream;
 
 public class DirectoryScanner {
-    private static final Set<String> CLEANUP_RULES = new HashSet<>();
+    private static final Set<String> CLEANUP_RULES;
 
     static {
+        // Load cleanup rules from JSON
         try {
             String jsonContent = FileUtils.readResourceFile("/com/kentom/devcleaner/config/cleanup-rules.json");
-            String[] rules = jsonContent.split("\"rules\":\\s*\\[")[1].split("]")[0].replaceAll("[\"\\s]", "").split(",");
-            for (String rule : rules) {
-                if (!rule.isEmpty()) {
-                    CLEANUP_RULES.add(rule);
-                }
-            }
+            CLEANUP_RULES = new HashSet<>(Arrays.asList(jsonContent.split("\"rules\":\\s*\\[")[1].split("]")[0].replaceAll("[\"\\s]", "").split(",")));
         } catch (Exception e) {
-            LogManager.log("Failed to load cleanup rules: " + e.getMessage());
+            throw new RuntimeException("Failed to load cleanup rules", e);
         }
     }
 
-    public List<Path> scan(Path directory) throws IOException {
-        if (!Files.exists(directory) || !Files.isDirectory(directory)) {
-            throw new IOException("Invalid directory: " + directory);
-        }
-
-        List<Path> filesToClean = new ArrayList<>();
-        Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
+    public List<Project> scan(Path rootDirectory) throws IOException {
+        List<Project> projects = new ArrayList<>();
+        Files.walkFileTree(rootDirectory, new SimpleFileVisitor<>() {
             @Override
-            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                // Check if the directory is a project
+                for (ProjectType type : ProjectType.values()) {
+                    try (Stream<Path> entries = Files.list(dir)) {
+                        if (entries.anyMatch(path -> type.markers.contains(path.getFileName().toString()))) {
+                            Project project = new Project(dir, type);
+                            findCleanableItems(project);
+                            projects.add(project);
+                            // Don't scan inside a project for more projects
+                            return FileVisitResult.SKIP_SUBTREE;
+                        }
+                    }
+                }
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult visitFileFailed(Path file, IOException exc) {
+                // Log or handle permissions errors
+                return FileVisitResult.CONTINUE;
+            }
+        });
+        return projects;
+    }
+
+    private void findCleanableItems(Project project) throws IOException {
+        Files.walkFileTree(project.getPath(), new SimpleFileVisitor<>() {
+            @Override
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
                 if (CLEANUP_RULES.contains(dir.getFileName().toString())) {
-                    filesToClean.add(dir);
+                    long size = Files.walk(dir).mapToLong(p -> p.toFile().length()).sum();
+                    project.addCleanableItem(dir, size);
                     return FileVisitResult.SKIP_SUBTREE;
                 }
                 return FileVisitResult.CONTINUE;
@@ -46,17 +64,10 @@ public class DirectoryScanner {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
                 if (CLEANUP_RULES.contains(file.getFileName().toString())) {
-                    filesToClean.add(file);
+                    project.addCleanableItem(file, attrs.size());
                 }
                 return FileVisitResult.CONTINUE;
             }
-
-            @Override
-            public FileVisitResult visitFileFailed(Path file, IOException exc) {
-                LogManager.log("Failed to access: " + file + " - " + exc.getMessage());
-                return FileVisitResult.CONTINUE;
-            }
         });
-        return filesToClean;
     }
 }

@@ -46,9 +46,11 @@
 .scroll-pane {
     -fx-background-color: transparent;
 }
+
 .scroll-pane .viewport {
     -fx-background-color: transparent;
 }
+
 .scroll-pane .scroll-bar:vertical .thumb {
     -fx-background-color: #34495e;
     -fx-background-radius: 10px;
@@ -67,18 +69,20 @@
     -fx-border-color: transparent;
     -fx-border-width: 2px;
 }
+
 .project-tile:hover {
     -fx-background-color: rgba(255, 255, 255, 0.12);
     -fx-border-color: #3498db;
     -fx-border-width: 2px;
-/*    border radius */
     -fx-border-radius: 12px;
 }
+
 .tile-title {
     -fx-font-size: 16px;
     -fx-text-fill: white;
     -fx-font-weight: 600;
 }
+
 .tile-subtitle {
     -fx-font-size: 12px;
     -fx-text-fill: #bdc3c7;
@@ -88,32 +92,39 @@
     -fx-background-color: rgba(35, 49, 64, 0.98);
     -fx-padding: 40px;
 }
+
 .back-button {
     -fx-background-color: transparent;
     -fx-text-fill: #3498db;
     -fx-font-size: 14px;
     -fx-padding: 5px 0px;
 }
+
 .back-button:hover {
     -fx-text-fill: #5dade2;
 }
+
 .details-title {
     -fx-font-size: 28px;
     -fx-text-fill: white;
     -fx-font-weight: bold;
 }
+
 .details-path {
     -fx-font-size: 14px;
     -fx-text-fill: #95a5a6;
     -fx-font-style: italic;
 }
+
 .details-info {
     -fx-font-size: 16px;
     -fx-text-fill: #ecf0f1;
 }
+
 .button-danger {
     -fx-background-color: #e74c3c;
 }
+
 .button-danger:hover {
     -fx-background-color: #c0392b;
 }

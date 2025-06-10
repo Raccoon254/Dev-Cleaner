@@ -81,6 +81,13 @@ public class MainController {
     }
 
     private void switchView(Node newView) {
+        if (contentPane.getChildren().size() > 1) {
+            while (contentPane.getChildren().size() > 1) {
+                contentPane.getChildren().remove(1);
+            }
+            contentPane.getChildren().get(0).setEffect(null);
+        }
+
         if (!contentPane.getChildren().contains(newView)) {
             Node currentView = contentPane.getChildren().get(0);
             contentPane.getChildren().add(newView);

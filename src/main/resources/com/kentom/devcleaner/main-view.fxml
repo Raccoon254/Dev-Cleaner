@@ -19,9 +19,15 @@
             <padding>
                 <Insets top="20" bottom="20"/>
             </padding>
-            <HBox alignment="CENTER" spacing="10" style="-fx-padding: 0 20 30 20; -fx-end-margin: 10px; -fx-start-margin: 10px">
+            <VBox alignment="CENTER" spacing="10"
+                  style="-fx-padding: 0 20; -fx-end-margin: 10px; -fx-start-margin: 10px">
+                <HBox alignment="CENTER" spacing="5">
+                    <ImageView fitHeight="60" fitWidth="60" preserveRatio="true">
+                        <Image url="@icons/logo-white.png"/>
+                    </ImageView>
+                </HBox>
                 <Label styleClass="sidebar-title" text="DevCleaner"/>
-            </HBox>
+            </VBox>
 
             <!-- To change an icon, just replace the SVG code in the 'content' property -->
             <Button onAction="#showProjects" styleClass="nav-button" text="Projects">

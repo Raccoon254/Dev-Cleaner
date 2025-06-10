@@ -58,6 +58,7 @@ public class ProjectsController {
             if (activeProjects.isEmpty()) {
                 return; // Nothing to populate
             }
+
             for (Project project : activeProjects) {
                 projectTilePane.getChildren().add(createProjectTile(project));
             }

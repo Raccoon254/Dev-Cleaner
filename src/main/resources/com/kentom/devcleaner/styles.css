@@ -1,51 +1,59 @@
-/* --- GLOBAL --- */
+/* ---
+--- Dark iOS Theme for DevCleaner
+--- Font: System UI (SF Pro on macOS, Segoe UI on Windows)
+--- By: Gemini
+--- */
+
+/* --- GLOBAL & FONTS --- */
 .root {
-    -fx-font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
-    -fx-background-color: #1a1d20;
+    -fx-background-color: #0C0C0CFF; /* A deep, dark background */
+    /* Uses the default system font for a native look and feel, like iOS */
+    -fx-font-family: -apple-system, "system-ui", "Segoe UI", "Roboto", "Helvetica Neue", sans-serif;
 }
 
 /* --- SIDEBAR & NAVIGATION --- */
 .sidebar {
-    -fx-background-color: #23272b;
-    -fx-padding: 20 0;
+    -fx-background-color: #0C0C0CFF;
+    -fx-padding: 20 12;
     -fx-alignment: top-center;
-    -fx-spacing: 8;
+    -fx-spacing: 10;
+    -fx-border-color: #3A3A3C;
+    -fx-border-width: 0 1px 0 0;
 }
 
 .sidebar-title {
-    -fx-font-size: 20px;
-    -fx-font-weight: 700;
-    -fx-text-fill: #e0e0e0;
+    -fx-font-size: 12px;
+    -fx-font-weight: normal;
+    -fx-text-fill: white;
 }
 
 .nav-button {
     -fx-background-color: transparent;
-    -fx-text-fill: #a9b1bd;
-    -fx-font-size: 14px;
-    -fx-font-weight: 500;
+    -fx-text-fill: #EBEBF599; /* Semi-transparent white for inactive state */
+    -fx-font-size: 16px;
+    -fx-font-weight: 600;
     -fx-pref-width: 180;
-    -fx-padding: 12 15;
+    -fx-padding: 12 20;
     -fx-alignment: center-left;
     -fx-cursor: hand;
-    -fx-background-radius: 8px;
-    -fx-graphic-text-gap: 12;
+    -fx-background-radius: 6px;
+    -fx-graphic-text-gap: 16px;
     -fx-transition: all 0.2s ease-in-out;
 }
 
 .nav-button:hover {
-    -fx-background-color: rgba(255, 255, 255, 0.05);
-    -fx-text-fill: #ffffff;
+    -fx-text-fill: white;
+    -fx-background-color: #1D1D1D;
 }
 
 .nav-button:focused {
-    -fx-background-color: #0078d7;
+    -fx-background-color: #0C0C0CFF; /* iOS blue for the active state */
     -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgb(10, 132, 255), 2, 0, 0, 0);
 }
 
 .nav-button SVGPath {
-    -fx-fill: #a9b1bd;
-    -fx-scale-x: 0.8;
-    -fx-scale-y: 0.8;
+    -fx-fill: #EBEBF599;
 }
 
 .nav-button:hover SVGPath, .nav-button:focused SVGPath {
@@ -54,196 +62,301 @@
 
 /* --- CONTENT AREA --- */
 .content-pane {
-    -fx-background-color: #1a1d20;
-    -fx-padding: 10;
+    -fx-background-color: #0C0C0CFF;
 }
 
 .view-title {
-    -fx-font-size: 28px;
+    -fx-font-size: 34px;
     -fx-font-weight: 700;
-    -fx-text-fill: #f5f5f5;
+    -fx-text-fill: #F2F2F7;
+    -fx-alignment: center;
+    -fx-padding: 20 0 10 0; /* Top padding for spacing */
+    -fx-text-alignment: center;
 }
 
 .view-subtitle {
-    -fx-font-size: 16px;
-    -fx-text-fill: #a9b1bd;
-    -fx-font-weight: 400;
+    -fx-font-size: 17px;
+    -fx-text-fill: #8E8E93; /* Standard iOS secondary text color */
+    -fx-font-weight: 500;
 }
-
 
 /* --- TEXT FIELDS --- */
 .text-field {
-    -fx-background-color: #2c3136;
-    -fx-text-fill: #e0e0e0;
-    -fx-font-size: 14px;
-    -fx-border-color: #3e444c;
+    -fx-background-color: #2C2C2E;
+    -fx-text-fill: #F2F2F7;
+    -fx-font-size: 16px;
+    -fx-border-color: #3A3A3C;
     -fx-border-width: 1px;
-    -fx-border-radius: 6px;
-    -fx-background-radius: 6px;
-    -fx-prompt-text-fill: #7f8c8d;
-    -fx-padding: 12px;
-    -fx-highlight-fill: #0078d7;
+    -fx-border-radius: 12px;
+    -fx-background-radius: 12px;
+    -fx-prompt-text-fill: #8E8E93;
+    -fx-padding: 14px 18px;
 }
 
 .text-field:focused {
-    -fx-border-color: #0078d7;
-    -fx-background-color: #33383d;
+    -fx-border-color: #0C0C0CFF;
+    -fx-border-width: 2px;
+    -fx-padding: 13px 17px; /* Adjust padding to keep size consistent */
+    -fx-effect: dropshadow(gaussian, rgb(10, 132, 255), 2, 0, 0, 0);
 }
 
-/* --- BUTTONS --- */
+/* --- BUTTONS (Rounded) --- */
 .button {
-    -fx-background-color: #0078d7;
+    -fx-background-color: #171718;
     -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-font-size: 14px;
-    -fx-background-radius: 6px;
-    -fx-padding: 12px 24px;
+    -fx-font-weight: 600;
+    -fx-font-size: 15px;
+    -fx-background-radius: 10px; /* Fully rounded */
+    -fx-padding: 14px 28px;
     -fx-cursor: hand;
-    -fx-transition: all 0.2s ease-in-out;
 }
 
 .button:hover {
-    -fx-background-color: #1085e0;
+    -fx-background-color: #1b1b1b;
 }
 
 .button-outline {
     -fx-background-color: transparent;
-    -fx-text-fill: #e0e0e0;
-    -fx-border-color: #3e444c;
-    -fx-border-width: 1px;
+    -fx-text-fill: #0A84FF;
+    -fx-border-color: #0A84FF;
+    -fx-border-width: 2px;
 }
 
 .button-outline:hover {
-    -fx-background-color: #2c3136;
-    -fx-border-color: #0078d7;
+    -fx-background-color: #0A84FF;
+    -fx-text-fill: white;
 }
 
 .button-danger {
-    -fx-background-color: #d83b01;
+    -fx-background-color: #FF3B30;
 }
+
 .button-danger:hover {
-    -fx-background-color: #c23501;
+    -fx-background-color: #FF453A;
 }
+
 
 /* --- SCAN VIEW --- */
 .scan-button {
-    -fx-pref-height: 100px;
-    -fx-pref-width: 100px;
-    -fx-background-radius: 50px;
-    -fx-background-color: white;
-    -fx-text-fill: #1a1d20;
-    -fx-font-size: 16px;
-    -fx-font-weight: 700;
-    -fx-graphic-text-gap: 8;
+    -fx-pref-height: 140px;
+    -fx-pref-width: 140px;
+    -fx-background-radius: 70px;
+    -fx-background-color: #30D158; /* iOS green for positive action */
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-graphic-text-gap: 10;
     -fx-content-display: top;
-    -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.2), 20, 0, 0, 0);
-    -fx-transition: all 0.3s cubic-bezier(.2,.8,.4,1);
+    /*-fx-effect: dropshadow(gaussian, rgba(48, 209, 88, 0.4), 20, 0, 0, 5);*/
 }
+
 .scan-button SVGPath {
-    -fx-fill: #1a1d20;
-    -fx-scale-x: 1.2;
-    -fx-scale-y: 1.2;
+    -fx-fill: white;
 }
 
 .scan-button:hover {
-    -fx-scale-x: 1.05;
-    -fx-scale-y: 1.05;
-    -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.4), 25, 0, 0, 0);
+    /*-fx-effect: dropshadow(gaussian, rgba(48, 209, 88, 0.6), 25, 0, 0, 8);*/
 }
+
 .scan-button:pressed {
-    -fx-scale-x: 0.98;
-    -fx-scale-y: 0.98;
+    -fx-scale-x: 0.95;
+    -fx-scale-y: 0.95;
 }
 
 /* --- LOADER ANIMATION --- */
-.loader {
-    -fx-min-width: 80px;
-    -fx-min-height: 80px;
-    -fx-max-width: 80px;
-    -fx-max-height: 80px;
-}
 .loader-arc {
-    -fx-fill: transparent;
-    -fx-stroke: #0095ff;
-    -fx-stroke-width: 4;
-    -fx-stroke-line-cap: round;
-    -fx-radius-x: 40;
-    -fx-radius-y: 40;
+    -fx-stroke: #0A84FF;
 }
+
 .scan-status-title {
-    -fx-font-size: 20px;
-    -fx-text-fill: white;
-    -fx-font-weight: 600;
+    -fx-font-size: 22px;
+    -fx-text-fill: #F2F2F7;
+    -fx-font-weight: bold;
 }
+
 .scan-status-text {
-    -fx-font-size: 14px;
-    -fx-text-fill: #a9b1bd;
+    -fx-font-size: 16px;
+    -fx-text-fill: #8E8E93;
 }
 
-
-/* --- PROJECT TILES & EMPTY STATE --- */
+/* --- PROJECT CARDS (Animated) --- */
 .project-tile {
-    -fx-background-color: #25292d;
-    -fx-padding: 20px;
-    -fx-background-radius: 12px;
-    -fx-alignment: top-center;
+    -fx-background-color: #171718;
+    -fx-padding: 25px;
+    -fx-background-radius: 18px; /* Prominent iOS-style rounded corners */
+    -fx-alignment: center;
     -fx-cursor: hand;
-    -fx-border-color: transparent;
-    -fx-border-width: 2px;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 3);
-    -fx-transition: all 0.2s ease-in-out;
+    /*-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 20, 0, 0, 4);*/
+    -fx-transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .project-tile:hover {
-    -fx-background-color: #2c3136;
-    -fx-border-color: #0078d7;
-    -fx-translate-y: -4px;
-    -fx-border-radius: 12px;
-    -fx-effect: dropshadow(gaussian, rgba(0,120,215,0.3), 15, 0, 0, 5);
+    -fx-background-color: #151515;
+    -fx-effect: dropshadow(gaussian, rgb(10, 132, 255), 2, 0, 0, 0);
 }
 
-.tile-title { -fx-font-size: 16px; -fx-text-fill: white; -fx-font-weight: 600; }
-.tile-subtitle { -fx-font-size: 12px; -fx-text-fill: #bdc3c7; }
+.tile-title {
+    -fx-font-size: 18px;
+    -fx-text-fill: white;
+    -fx-font-weight: 600;
+}
 
-.empty-state-icon { -fx-fill: #4a4f54; -fx-scale-x: 3; -fx-scale-y: 3; }
-.empty-state-title { -fx-font-size: 20px; -fx-text-fill: #e0e0e0; -fx-font-weight: 600; }
-.empty-state-text { -fx-font-size: 14px; -fx-text-fill: #a9b1bd; }
+.tile-subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: #0A84FF;
+    -fx-font-weight: 500;
+}
 
+.empty-state-icon {
+    -fx-fill: #3A3A3C;
+    -fx-scale-x: 4;
+    -fx-scale-y: 4;
+}
+
+.empty-state-title {
+    -fx-font-size: 22px;
+    -fx-text-fill: #EBEBF599;
+    -fx-font-weight: bold;
+}
+
+.empty-state-text {
+    -fx-font-size: 16px;
+    -fx-text-fill: #8E8E93;
+}
 
 /* --- PROJECT DETAILS VIEW --- */
-.details-pane { -fx-background-color: rgba(26, 29, 32, 0.95); }
+.details-pane {
+    -fx-background-color: rgba(23, 23, 23, 0.85);
+    -fx-backdrop-filter: blur(20px);
+}
 
 .back-button {
     -fx-background-color: transparent;
-    -fx-text-fill: #0095ff;
-    -fx-font-size: 14px;
+    -fx-text-fill: #0A84FF;
+    -fx-font-size: 17px;
     -fx-padding: 5px 0px;
     -fx-font-weight: 500;
 }
-.back-button:hover { -fx-underline: true; }
-.details-title { -fx-font-size: 26px; -fx-text-fill: white; -fx-font-weight: 700; }
-.details-path { -fx-font-size: 13px; -fx-text-fill: #95a5a6; }
-.details-info-header { -fx-font-size: 16px; -fx-text-fill: #e0e0e0; -fx-font-weight: 600; }
-.details-info { -fx-font-size: 14px; -fx-text-fill: #bdc3c7; }
-.cleanable-files-list, .cleanable-files-list .list-cell {
-    -fx-background-color: #25292d;
-    -fx-text-fill: #bdc3c7;
-    -fx-border-color: #3e444c;
-    -fx-border-width: 1px;
-    -fx-border-radius: 6px;
-    -fx-background-radius: 6px;
+
+.back-button:hover {
+    -fx-underline: true;
 }
-.cleanable-files-list .list-cell:filled:hover { -fx-background-color: #2c3136; }
 
-/* --- SCROLL & PROGRESS --- */
-.scroll-pane { -fx-background-color: transparent; }
-.scroll-pane .viewport { -fx-background-color: transparent; }
-.scroll-pane .scroll-bar:vertical .thumb { -fx-background-color: #3e444c; -fx-background-radius: 10px; }
+.details-title {
+    -fx-font-size: 28px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
 
-/* --- SETTINGS VIEW --- */
-.settings-card { -fx-padding: 20px; -fx-background-color: #25292d; -fx-background-radius: 8px; }
-.settings-title { -fx-font-size: 18px; -fx-font-weight: 600; -fx-text-fill: #f5f5f5; }
-.check-box .box { -fx-background-color: #2c3136; -fx-border-color: #3e444c; -fx-border-radius: 4px; }
-.check-box:selected .mark { -fx-background-color: white; }
-.check-box:selected .box { -fx-background-color: #0078d7; }
-.check-box { -fx-text-fill: #e0e0e0; -fx-font-size: 14px; }
+.details-path {
+    -fx-font-size: 14px;
+    -fx-text-fill: #8E8E93;
+}
+
+.details-info-header {
+    -fx-font-size: 17px;
+    -fx-text-fill: white;
+    -fx-font-weight: 600;
+}
+
+.details-info {
+    -fx-font-size: 15px;
+    -fx-text-fill: #8E8E93;
+}
+
+.cleanable-files-list {
+    -fx-background-color: #2C2C2E;
+    -fx-border-color: #3A3A3C;
+    -fx-border-radius: 12px;
+    -fx-background-radius: 12px;
+}
+
+.cleanable-files-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #F2F2F7;
+    -fx-padding: 10px 15px;
+    -fx-font-size: 15px;
+}
+
+.cleanable-files-list .list-cell:filled:hover {
+    -fx-background-color: #3A3A3C;
+}
+
+.cleanable-files-list .list-cell:filled:selected {
+    -fx-background-color: #007AFF;
+}
+
+/* --- SCROLL & SETTINGS --- */
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .scroll-bar:vertical .thumb {
+    -fx-background-color: #3A3A3C;
+    -fx-background-radius: 10px;
+}
+
+/* scroll bar background*/
+.scroll-pane .scroll-bar:vertical {
+    -fx-background-color: #0C0C0CFF;
+}
+
+.settings-card {
+    -fx-padding: 25px;
+    -fx-background-color: #2C2C2E;
+    -fx-background-radius: 18px;
+}
+
+.settings-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.check-box {
+    -fx-text-fill: #EBEBF599;
+    -fx-font-size: 15px;
+}
+
+.check-box .box {
+    -fx-background-color: #3A3A3C;
+    -fx-border-radius: 6px;
+}
+
+.check-box:selected .mark {
+    -fx-background-color: white;
+}
+
+.check-box:selected .box {
+    -fx-background-color: #30D158;
+}
+
+/* --- DIALOG (ALERT) STYLING --- */
+.dialog-pane {
+    -fx-background-color: #2C2C2E;
+    -fx-border-color: #3A3A3C;
+}
+
+.dialog-pane .label {
+    -fx-text-fill: #F2F2F7;
+}
+
+.dialog-pane .header-panel {
+    -fx-background-color: #1D1D1D;
+}
+
+.dialog-pane .header-panel .label {
+    -fx-text-fill: white;
+    -fx-font-weight: 600;
+}
+
+.projects-container {
+    -fx-alignment: center;
+    -fx-background-color: #0C0C0CFF;
+    -fx-border-radius: 12px;
+    -fx-background-radius: 12px;
+}

@@ -13,10 +13,10 @@ public class DevCleanerApp extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(DevCleanerApp.class.getResource("main-view.fxml"));
         Parent root = fxmlLoader.load();
-        Scene scene = new Scene(root, 900, 700);
-        stage.setTitle("Dev Cleaner");
-        stage.setMinWidth(800);
-        stage.setMinHeight(600);
+        Scene scene = new Scene(root, 1024, 768);
+        stage.setTitle("Dev Cleaner Pro");
+        stage.setMinWidth(900);
+        stage.setMinHeight(650);
         stage.setScene(scene);
         stage.show();
     }

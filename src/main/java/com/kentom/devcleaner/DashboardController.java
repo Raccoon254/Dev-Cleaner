@@ -1,6 +1,5 @@
 package com.kentom.devcleaner;
 
-import com.kentom.devcleaner.model.CleanupTask;
 import com.kentom.devcleaner.model.DirectoryScanner;
 import com.kentom.devcleaner.model.LogManager;
 import com.kentom.devcleaner.model.Project;
@@ -14,7 +13,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
@@ -31,32 +29,31 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class CleanerController {
+public class DashboardController {
 
-    @FXML private StackPane rootStackPane;
-    @FXML private VBox mainView;
+    @FXML private StackPane dashboardRoot;
     @FXML private TextField directoryPathField;
     @FXML private Button scanButton;
     @FXML private TilePane projectTilePane;
-    @FXML private ScrollPane scrollPane;
     @FXML private ProgressIndicator scanProgressIndicator;
 
+    private MainController mainController;
     private final DirectoryScanner scanner = new DirectoryScanner();
     private List<Project> activeProjects;
+
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
+    }
 
     @FXML
     private void initialize() {
         directoryPathField.setText(UserPreferences.getLastScannedPath());
         scanProgressIndicator.setVisible(false);
-        // Load cached projects on startup
         loadCachedProjects();
     }
 
     private void loadCachedProjects() {
         activeProjects = ProjectCache.loadProjects();
-        if (activeProjects.isEmpty()) {
-            LogManager.log("No cached projects found. Ready for a new scan.");
-        }
         populateGrid();
     }
 
@@ -70,25 +67,25 @@ public class CleanerController {
     }
 
     private Node createProjectTile(Project project) {
-        VBox tile = new VBox(10);
+        VBox tile = new VBox(5);
         tile.getStyleClass().add("project-tile");
         tile.setAlignment(Pos.CENTER);
 
         ImageView icon = new ImageView(project.getIcon());
-        icon.setFitHeight(50);
-        icon.setFitWidth(50);
+        icon.setFitHeight(48);
+        icon.setFitWidth(48);
         icon.setPreserveRatio(true);
 
         Label name = new Label(project.getName());
         name.getStyleClass().add("tile-title");
 
-        Label type = new Label(project.getType().displayName + " Project");
+        Label type = new Label(project.getType().displayName);
         type.getStyleClass().add("tile-subtitle");
 
         tile.getChildren().addAll(icon, name, type);
         tile.setOnMouseClicked(event -> showProjectDetails(project));
 
-        FadeTransition ft = new FadeTransition(Duration.millis(700), tile);
+        FadeTransition ft = new FadeTransition(Duration.millis(500), tile);
         ft.setFromValue(0.0);
         ft.setToValue(1.0);
         ft.play();
@@ -99,12 +96,12 @@ public class CleanerController {
     @FXML
     private void handleBrowseAction() {
         DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle("Select a Directory to Scan");
+        directoryChooser.setTitle("Select Directory to Scan");
         File initialDir = new File(directoryPathField.getText());
         if (initialDir.exists() && initialDir.isDirectory()) {
             directoryChooser.setInitialDirectory(initialDir);
         }
-        File selectedDirectory = directoryChooser.showDialog(rootStackPane.getScene().getWindow());
+        File selectedDirectory = directoryChooser.showDialog(dashboardRoot.getScene().getWindow());
         if (selectedDirectory != null) {
             directoryPathField.setText(selectedDirectory.getAbsolutePath());
             handleScanAction();
@@ -115,7 +112,7 @@ public class CleanerController {
     private void handleScanAction() {
         String pathText = directoryPathField.getText().trim();
         if (pathText.isEmpty()) {
-            showAlert(Alert.AlertType.ERROR, "Path Required", "Please enter or browse to a directory path to scan.");
+            showAlert(Alert.AlertType.ERROR, "Path Required", "Please enter a directory path to scan.");
             return;
         }
 
@@ -131,8 +128,7 @@ public class CleanerController {
 
         Task<List<Project>> scanTask = new Task<>() {
             @Override
-            protected List<Project> call() throws Exception {
-                LogManager.log("Starting scan of directory: " + pathText);
+            protected List<Project> call() throws IOException {
                 return scanner.scan(scanPath);
             }
         };
@@ -146,10 +142,8 @@ public class CleanerController {
         });
 
         scanTask.setOnFailed(event -> {
-            Throwable ex = scanTask.getException();
-            String errorMessage = (ex != null) ? ex.getMessage() : "An unknown error occurred.";
-            LogManager.log("Scan failed: " + errorMessage);
-            showAlert(Alert.AlertType.ERROR, "Scan Failed", "An error occurred during scanning:\n" + errorMessage);
+            LogManager.log("Scan failed: " + scanTask.getException().getMessage());
+            showAlert(Alert.AlertType.ERROR, "Scan Failed", "An error occurred during scanning.");
             scanProgressIndicator.setVisible(false);
             scanButton.setDisable(false);
         });
@@ -165,7 +159,6 @@ public class CleanerController {
         }
         activeProjects = new java.util.ArrayList<>(projectMap.values());
         ProjectCache.saveProjects(activeProjects);
-        LogManager.log("Projects merged and cache updated.");
     }
 
     public void removeProject(Project project) {
@@ -178,24 +171,13 @@ public class CleanerController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("project-details-view.fxml"));
             Node detailsView = loader.load();
-            detailsView.setId("detailsView");
             ProjectDetailsController controller = loader.getController();
-            controller.setProject(project, this);
-            FadeTransition ft = new FadeTransition(Duration.millis(300), detailsView);
-            ft.setFromValue(0.0);
-            ft.setToValue(1.0);
-            mainView.setEffect(new GaussianBlur(10));
-            rootStackPane.getChildren().add(detailsView);
-            ft.play();
+            controller.setProject(project, this, mainController);
+            mainController.showProjectDetails(detailsView);
         } catch (IOException e) {
             LogManager.log("Failed to load project details view: " + e.getMessage());
             e.printStackTrace();
         }
-    }
-
-    public void hideProjectDetails() {
-        mainView.setEffect(null);
-        rootStackPane.getChildren().removeIf(node -> "detailsView".equals(node.getId()));
     }
 
     private void showAlert(Alert.AlertType alertType, String title, String message) {

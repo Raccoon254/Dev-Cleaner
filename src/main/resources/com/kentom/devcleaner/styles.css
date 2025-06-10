@@ -1,80 +1,142 @@
+/* --- GLOBAL --- */
 .root {
-    -fx-background-color: linear-gradient(to bottom, #2c3e50, #233140);
-    -fx-font-family: "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    -fx-font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+    -fx-background-color: #1a1d20;
 }
 
-.title {
-    -fx-font-size: 32px;
-    -fx-text-fill: #ecf0f1;
+/* --- SIDEBAR & NAVIGATION --- */
+.sidebar {
+    -fx-background-color: #23272b;
+    -fx-padding: 20 0;
+    -fx-alignment: top-center;
+    -fx-spacing: 8;
+}
+
+.sidebar-title {
+    -fx-font-size: 20px;
     -fx-font-weight: 700;
+    -fx-text-fill: #e0e0e0;
 }
 
-.text-field {
-    -fx-background-color: rgba(0, 0, 0, 0.2);
-    -fx-text-fill: #bdc3c7;
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #a9b1bd;
     -fx-font-size: 14px;
-    -fx-border-color: #34495e;
+    -fx-font-weight: 500;
+    -fx-pref-width: 180;
+    -fx-padding: 12 15;
+    -fx-alignment: center-left;
+    -fx-cursor: hand;
+    -fx-background-radius: 8px;
+    -fx-graphic-text-gap: 12;
+    -fx-transition: all 0.2s ease-in-out;
+}
+
+.nav-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.05);
+    -fx-text-fill: #ffffff;
+}
+
+.nav-button:focused {
+    -fx-background-color: #0078d7;
+    -fx-text-fill: white;
+}
+
+.nav-button SVGPath {
+    -fx-fill: #a9b1bd;
+    -fx-scale-x: 0.8;
+    -fx-scale-y: 0.8;
+}
+
+.nav-button:hover SVGPath, .nav-button:focused SVGPath {
+    -fx-fill: white;
+}
+
+/* --- CONTENT AREA --- */
+.content-pane {
+    -fx-background-color: #1a1d20;
+    -fx-padding: 10;
+}
+
+.view-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #f5f5f5;
+}
+
+/* --- TEXT FIELDS --- */
+.text-field {
+    -fx-background-color: #2c3136;
+    -fx-text-fill: #e0e0e0;
+    -fx-font-size: 14px;
+    -fx-border-color: #3e444c;
     -fx-border-width: 1px;
     -fx-border-radius: 6px;
     -fx-background-radius: 6px;
     -fx-prompt-text-fill: #7f8c8d;
-    -fx-padding: 10px;
+    -fx-padding: 12px;
+    -fx-highlight-fill: #0078d7;
 }
 
 .text-field:focused {
-    -fx-border-color: #3498db;
+    -fx-border-color: #0078d7;
+    -fx-background-color: #33383d;
 }
 
+/* --- BUTTONS --- */
 .button {
-    -fx-background-color: #3498db;
+    -fx-background-color: #0078d7;
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-font-size: 14px;
     -fx-background-radius: 6px;
-    -fx-padding: 10px 22px;
+    -fx-padding: 12px 24px;
     -fx-cursor: hand;
+    -fx-transition: all 0.2s ease-in-out;
 }
 
 .button:hover {
-    -fx-background-color: #2980b9;
+    -fx-background-color: #1085e0;
 }
 
-.progress-indicator {
-    -fx-progress-color: #3498db;
-}
-
-.scroll-pane {
+.button-outline {
     -fx-background-color: transparent;
+    -fx-text-fill: #e0e0e0;
+    -fx-border-color: #3e444c;
+    -fx-border-width: 1px;
 }
 
-.scroll-pane .viewport {
-    -fx-background-color: transparent;
+.button-outline:hover {
+    -fx-background-color: #2c3136;
+    -fx-border-color: #0078d7;
 }
 
-.scroll-pane .scroll-bar:vertical .thumb {
-    -fx-background-color: #34495e;
-    -fx-background-radius: 10px;
+.button-danger {
+    -fx-background-color: #d83b01;
+}
+.button-danger:hover {
+    -fx-background-color: #c23501;
 }
 
-.tile-pane {
-    -fx-padding: 10px;
-}
-
+/* --- PROJECT TILES --- */
 .project-tile {
-    -fx-background-color: rgba(255, 255, 255, 0.07);
+    -fx-background-color: #25292d;
     -fx-padding: 20px;
     -fx-background-radius: 12px;
     -fx-alignment: top-center;
     -fx-cursor: hand;
     -fx-border-color: transparent;
     -fx-border-width: 2px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 3);
+    -fx-transition: all 0.2s ease-in-out;
 }
 
 .project-tile:hover {
-    -fx-background-color: rgba(255, 255, 255, 0.12);
-    -fx-border-color: #3498db;
-    -fx-border-width: 2px;
+    -fx-background-color: #2c3136;
+    -fx-border-color: #0078d7;
+    -fx-translate-y: -4px;
     -fx-border-radius: 12px;
+    -fx-effect: dropshadow(gaussian, rgba(0,120,215,0.3), 15, 0, 0, 5);
 }
 
 .tile-title {
@@ -88,43 +150,88 @@
     -fx-text-fill: #bdc3c7;
 }
 
+/* --- PROJECT DETAILS VIEW --- */
 .details-pane {
-    -fx-background-color: rgba(35, 49, 64, 0.98);
-    -fx-padding: 40px;
+    -fx-background-color: #1a1d20;
 }
 
 .back-button {
     -fx-background-color: transparent;
-    -fx-text-fill: #3498db;
+    -fx-text-fill: #0095ff;
     -fx-font-size: 14px;
     -fx-padding: 5px 0px;
+    -fx-font-weight: 500;
 }
 
 .back-button:hover {
-    -fx-text-fill: #5dade2;
+    -fx-underline: true;
 }
 
 .details-title {
-    -fx-font-size: 28px;
+    -fx-font-size: 26px;
     -fx-text-fill: white;
-    -fx-font-weight: bold;
+    -fx-font-weight: 700;
 }
 
 .details-path {
-    -fx-font-size: 14px;
+    -fx-font-size: 13px;
     -fx-text-fill: #95a5a6;
-    -fx-font-style: italic;
+}
+
+.details-info-header {
+    -fx-font-size: 16px;
+    -fx-text-fill: #e0e0e0;
+    -fx-font-weight: 600;
 }
 
 .details-info {
-    -fx-font-size: 16px;
-    -fx-text-fill: #ecf0f1;
+    -fx-font-size: 14px;
+    -fx-text-fill: #bdc3c7;
 }
 
-.button-danger {
-    -fx-background-color: #e74c3c;
+.cleanable-files-list, .cleanable-files-list .list-cell {
+    -fx-background-color: #25292d;
+    -fx-text-fill: #bdc3c7;
+    -fx-border-color: #3e444c;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
 }
 
-.button-danger:hover {
-    -fx-background-color: #c0392b;
+/* --- SCROLL & PROGRESS --- */
+.scroll-pane { -fx-background-color: transparent; }
+.scroll-pane .viewport { -fx-background-color: transparent; }
+.scroll-pane .scroll-bar:vertical .thumb { -fx-background-color: #3e444c; -fx-background-radius: 10px; }
+.progress-indicator { -fx-progress-color: #0078d7; }
+
+/* --- SETTINGS VIEW --- */
+.settings-card {
+    -fx-padding: 20px;
+    -fx-background-color: #25292d;
+    -fx-background-radius: 8px;
+}
+
+.settings-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #f5f5f5;
+}
+
+.check-box .box {
+    -fx-background-color: #2c3136;
+    -fx-border-color: #3e444c;
+    -fx-border-radius: 4px;
+}
+
+.check-box:selected .mark {
+    -fx-background-color: white;
+}
+
+.check-box:selected .box {
+    -fx-background-color: #0078d7;
+}
+
+.check-box {
+    -fx-text-fill: #e0e0e0;
+    -fx-font-size: 14px;
 }

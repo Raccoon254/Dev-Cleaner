@@ -38,14 +38,26 @@ public class ProjectsController {
 
     public void refreshProjects() {
         activeProjects = ProjectCache.loadProjects();
-        emptyStateBox.setVisible(activeProjects.isEmpty());
-        projectTilePane.setVisible(!activeProjects.isEmpty());
+        boolean projectsExist = !activeProjects.isEmpty();
+
+        // When projects exist, the empty state is made invisible AND unmanaged,
+        // which removes it from the layout bounds completely.
+        emptyStateBox.setVisible(!projectsExist);
+        emptyStateBox.setManaged(!projectsExist);
+
+        // The project grid is made visible and managed only when projects exist.
+        projectTilePane.setVisible(projectsExist);
+        projectTilePane.setManaged(projectsExist);
+
         populateGrid();
     }
 
     private void populateGrid() {
         Platform.runLater(() -> {
             projectTilePane.getChildren().clear();
+            if (activeProjects.isEmpty()) {
+                return; // Nothing to populate
+            }
             for (Project project : activeProjects) {
                 projectTilePane.getChildren().add(createProjectTile(project));
             }

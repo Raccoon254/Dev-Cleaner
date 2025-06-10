@@ -1,0 +1,9 @@
+{
+  "rules": [
+    "node_modules",
+    "target",
+    ".next",
+    "__pycache__",
+    ".DS_Store"
+  ]
+}

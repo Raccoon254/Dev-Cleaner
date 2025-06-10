@@ -75,7 +75,7 @@ public class ProjectsController {
         icon.setFitWidth(48);
         icon.setPreserveRatio(true);
 
-        Label name = new Label(project.getName());
+        Label name = new Label(formatProjectName(project.getName()));
         name.getStyleClass().add("tile-title");
 
         Label type = new Label(project.getType().displayName);
@@ -90,6 +90,28 @@ public class ProjectsController {
         ft.play();
 
         return tile;
+    }
+
+    private String formatProjectName(String name) {
+        StringBuilder formattedName = new StringBuilder();
+        boolean capitalizeNext = true;
+        for (char c : name.toCharArray()) {
+            if (c == '-') {
+                formattedName.append(' ');
+                capitalizeNext = true;
+            } else if (Character.isWhitespace(c)) {
+                formattedName.append(c);
+                capitalizeNext = true;
+            } else {
+                if (capitalizeNext) {
+                    formattedName.append(Character.toUpperCase(c));
+                    capitalizeNext = false;
+                } else {
+                    formattedName.append(c);
+                }
+            }
+        }
+        return formattedName.toString();
     }
 
     public void removeProject(Project project) {

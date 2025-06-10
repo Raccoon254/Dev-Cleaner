@@ -12,11 +12,12 @@ Dev Cleaner is a JavaFX application designed to help developers manage their wor
 
 ## Technologies
 - **JavaFX** for UI
-- **Java 17**
+- **Java 23**
 - **Maven** for dependency management
 
 ## Running Dev Cleaner
 To run the application, simply execute the following Maven command:
+
 ```bash
 mvn javafx:run
 ```

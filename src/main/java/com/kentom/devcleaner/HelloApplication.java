@@ -1,4 +1,4 @@
-package com.kentom.dev_cleaner;
+package com.kentom.devcleaner;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

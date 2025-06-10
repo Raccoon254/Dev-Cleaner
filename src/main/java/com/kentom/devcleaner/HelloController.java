@@ -1,4 +1,4 @@
-package com.kentom.dev_cleaner;
+package com.kentom.devcleaner;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

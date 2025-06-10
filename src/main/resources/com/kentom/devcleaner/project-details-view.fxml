@@ -9,7 +9,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.Priority?>
 
-<VBox fx:id="detailsView" styleClass="details-pane" spacing="15.0"
+<?import javafx.scene.image.Image?>
+<VBox fx:id="detailsView" stylesheets="@buttons_detail.css" styleClass="details-pane" spacing="15.0"
       xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.kentom.devcleaner.ProjectDetailsController">
     <padding>
@@ -35,7 +36,33 @@
     </VBox>
 
     <HBox spacing="10" alignment="CENTER_LEFT">
-        <Button fx:id="cleanButton" onAction="#handleCleanProject" text="Clean Project"/>
-        <Button onAction="#handleForgetProject" styleClass="button-danger" text="Forget Project"/>
+        <Button fx:id="backButton" styleClass="back-button" onAction="#handleBackAction" text="Back">
+            <graphic>
+                <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
+                    <Image url="@icons/arrow-left.png"/>
+                </ImageView>
+            </graphic>
+        </Button>
+        <Button fx:id="scanButton" styleClass="scan-project-button" onAction="#handleScanProject" text="Scan Project">
+            <graphic>
+                <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
+                    <Image url="@icons/scanning.png"/>
+                </ImageView>
+            </graphic>
+        </Button>
+        <Button fx:id="cleanButton" styleClass="clean-button" onAction="#handleCleanProject" text="Clean Project">
+            <graphic>
+                <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
+                    <Image url="@icons/clean.png"/>
+                </ImageView>
+            </graphic>
+        </Button>
+        <Button onAction="#handleForgetProject" styleClass="button-danger" text="Forget Project">
+            <graphic>
+                <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
+                    <Image url="@icons/close.png"/>
+                </ImageView>
+            </graphic>
+        </Button>
     </HBox>
 </VBox>

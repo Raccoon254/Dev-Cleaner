@@ -1,0 +1,38 @@
+/* Base button styles */
+.button {
+    -fx-padding: 8px 15px;
+    -fx-cursor: hand;
+    -fx-font-size: 13px;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-border-color: rgba(255, 255, 255, 0.6);
+    -fx-border-width: 1px;
+}
+
+/* Back button - gray/neutral */
+.back-button {
+    -fx-background-color: #1e1d1d;
+    -fx-text-fill: #ffffff;
+}
+
+/* Scan button - blue */
+.scan-project-button {
+    -fx-background-color: #031d31;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+/* Clean button - green */
+.clean-button {
+    -fx-background-color: #1e1d1d;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+/* Danger button - red */
+.button-danger {
+    -fx-background-color: #1e1d1d;
+    -fx-text-fill: white;
+    -fx-border-color: #d32f2f;
+    -fx-border-width: 1px;
+}

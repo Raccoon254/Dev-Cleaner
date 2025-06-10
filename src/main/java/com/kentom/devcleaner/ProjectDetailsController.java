@@ -5,8 +5,8 @@ import com.kentom.devcleaner.model.LogManager;
 import com.kentom.devcleaner.model.Project;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
@@ -112,5 +112,8 @@ public class ProjectDetailsController {
             alert.setContentText(message);
             alert.showAndWait();
         });
+    }
+
+    public void handleScanProject(ActionEvent actionEvent) {
     }
 }

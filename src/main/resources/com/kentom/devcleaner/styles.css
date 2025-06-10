@@ -259,14 +259,11 @@
 }
 
 .cleanable-files-list, .cleanable-files-list .list-cell {
-    -fx-background-color: #25292d;
+    -fx-background-color: #171718;
     -fx-text-fill: #bdc3c7;
     -fx-border-color: #3e444c;
-    -fx-border-width: 1px;
-    -fx-border-radius: 6px;
-    -fx-background-radius: 6px;
-    -fx-padding: 10px;
-    -fx-spacing: 5px;
+    -fx-border-width: 0 0 1px 0;
+    -fx-padding: 10px 0;
 }
 
 .cleanable-files-list .list-cell {
@@ -277,14 +274,12 @@
     -fx-cursor: hand;
     -fx-alignment: center-left;
     -fx-transition: all 0.2s ease-in-out;
-/*    space */
-    -fx-background-radius: 6px;
     -fx-start-margin: 10px;
     -fx-end-margin: 10px;
 }
 
 .cleanable-files-list .list-cell:filled:hover {
-    -fx-background-color: #3A3A3C;
+    -fx-background-color: #1D1D1D;
 }
 
 .cleanable-files-list .list-cell:filled:selected {

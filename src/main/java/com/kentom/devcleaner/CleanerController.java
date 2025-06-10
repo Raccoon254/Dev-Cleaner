@@ -1,6 +1,10 @@
 package com.kentom.devcleaner;
 
-import com.kentom.devcleaner.model.*;
+import com.kentom.devcleaner.model.CleanupTask;
+import com.kentom.devcleaner.model.DirectoryScanner;
+import com.kentom.devcleaner.model.LogManager;
+import com.kentom.devcleaner.model.Project;
+import com.kentom.devcleaner.model.ProjectCache;
 import com.kentom.devcleaner.util.UserPreferences;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
@@ -44,6 +48,7 @@ public class CleanerController {
     private void initialize() {
         directoryPathField.setText(UserPreferences.getLastScannedPath());
         scanProgressIndicator.setVisible(false);
+        // Load cached projects on startup
         loadCachedProjects();
     }
 
@@ -141,8 +146,10 @@ public class CleanerController {
         });
 
         scanTask.setOnFailed(event -> {
-            LogManager.log("Scan failed: " + scanTask.getException().getMessage());
-            showAlert(Alert.AlertType.ERROR, "Scan Failed", "An error occurred during scanning.");
+            Throwable ex = scanTask.getException();
+            String errorMessage = (ex != null) ? ex.getMessage() : "An unknown error occurred.";
+            LogManager.log("Scan failed: " + errorMessage);
+            showAlert(Alert.AlertType.ERROR, "Scan Failed", "An error occurred during scanning:\n" + errorMessage);
             scanProgressIndicator.setVisible(false);
             scanButton.setDisable(false);
         });

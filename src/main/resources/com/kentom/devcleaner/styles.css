@@ -70,6 +70,9 @@
 .project-tile:hover {
     -fx-background-color: rgba(255, 255, 255, 0.12);
     -fx-border-color: #3498db;
+    -fx-border-width: 2px;
+/*    border radius */
+    -fx-border-radius: 12px;
 }
 .tile-title {
     -fx-font-size: 16px;

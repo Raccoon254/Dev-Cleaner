@@ -15,29 +15,48 @@ public class MainController {
     @FXML private BorderPane mainPane;
     @FXML private StackPane contentPane;
 
-    private Node dashboardView;
-    private DashboardController dashboardController;
+    private Node projectsView;
+    private Node scanView;
+    private Node settingsView;
+
+    private ProjectsController projectsController;
+    private ScanController scanController;
 
     @FXML
     public void initialize() throws IOException {
-        // Load the initial view (Dashboard)
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard-view.fxml"));
-        dashboardView = loader.load();
-        dashboardController = loader.getController();
-        dashboardController.setMainController(this);
-        contentPane.getChildren().add(dashboardView);
+        // Pre-load all the views
+        FXMLLoader projectsLoader = new FXMLLoader(getClass().getResource("projects-view.fxml"));
+        projectsView = projectsLoader.load();
+        projectsController = projectsLoader.getController();
+        projectsController.setMainController(this);
+
+        FXMLLoader scanLoader = new FXMLLoader(getClass().getResource("scan-view.fxml"));
+        scanView = scanLoader.load();
+        scanController = scanLoader.getController();
+        scanController.setProjectsController(projectsController); // Give scan controller a reference to projects
+
+        // Set initial view
+        contentPane.getChildren().add(projectsView);
     }
 
     @FXML
-    private void showDashboard() {
-        switchView(dashboardView);
+    private void showProjects() {
+        switchView(projectsView);
+        projectsController.refreshProjects(); // Refresh projects when switching to the view
+    }
+
+    @FXML
+    private void showScan() {
+        switchView(scanView);
     }
 
     @FXML
     private void showSettings() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("settings-view.fxml"));
-            Node settingsView = loader.load();
+            if (settingsView == null) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("settings-view.fxml"));
+                settingsView = loader.load();
+            }
             switchView(settingsView);
         } catch (IOException e) {
             e.printStackTrace();
@@ -50,32 +69,32 @@ public class MainController {
         FadeTransition fadeIn = new FadeTransition(Duration.millis(300), detailsView);
         fadeIn.setToValue(1.0);
         fadeIn.play();
+        contentPane.getChildren().get(0).setEffect(new javafx.scene.effect.GaussianBlur(10));
     }
 
     public void hideProjectDetails(Node detailsView) {
+        contentPane.getChildren().get(0).setEffect(null);
         FadeTransition fadeOut = new FadeTransition(Duration.millis(300), detailsView);
         fadeOut.setToValue(0);
         fadeOut.setOnFinished(e -> contentPane.getChildren().remove(detailsView));
         fadeOut.play();
     }
 
-    private void switchView(Node view) {
-        if (contentPane.getChildren().get(0) != view) {
+    private void switchView(Node newView) {
+        if (!contentPane.getChildren().contains(newView)) {
             Node currentView = contentPane.getChildren().get(0);
-            FadeTransition fadeOut = new FadeTransition(Duration.millis(200), currentView);
+            contentPane.getChildren().add(newView);
+            newView.setOpacity(0);
+
+            FadeTransition fadeOut = new FadeTransition(Duration.millis(150), currentView);
             fadeOut.setToValue(0);
-            fadeOut.setOnFinished(e -> {
-                if(view != dashboardView) { // Avoid re-adding dashboard view if it's already there
-                    contentPane.getChildren().set(0, view);
-                } else if(!contentPane.getChildren().contains(dashboardView)) {
-                    contentPane.getChildren().set(0, dashboardView);
-                }
-                view.setOpacity(0);
-                FadeTransition fadeIn = new FadeTransition(Duration.millis(200), view);
-                fadeIn.setToValue(1);
-                fadeIn.play();
-            });
+            fadeOut.setOnFinished(e -> contentPane.getChildren().remove(currentView));
+
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(250), newView);
+            fadeIn.setToValue(1);
+
             fadeOut.play();
+            fadeIn.play();
         }
     }
 }

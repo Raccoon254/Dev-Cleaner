@@ -28,12 +28,12 @@ public class ProjectDetailsController {
     @FXML private Button cleanButton;
 
     private Project project;
-    private DashboardController dashboardController;
+    private ProjectsController projectController;
     private MainController mainController;
 
-    public void setProject(Project project, DashboardController dashboardController, MainController mainController) {
+    public void setProject(Project project, ProjectsController projectController, MainController mainController) {
         this.project = project;
-        this.dashboardController = dashboardController;
+        this.projectController = projectController;
         this.mainController = mainController;
         displayProjectDetails();
     }
@@ -74,7 +74,7 @@ public class ProjectDetailsController {
             try {
                 new CleanupTask().clean(project.getCleanableItems());
                 showAlert(Alert.AlertType.INFORMATION, "Success", "Cleanup completed. The project has been removed from the list.");
-                dashboardController.removeProject(project);
+                projectController.removeProject(project);
                 handleBackAction();
             } catch (Exception e) {
                 LogManager.log("Cleanup failed: " + e.getMessage());
@@ -92,7 +92,7 @@ public class ProjectDetailsController {
 
         Optional<ButtonType> result = confirmation.showAndWait();
         if(result.isPresent() && result.get() == ButtonType.OK) {
-            dashboardController.removeProject(project);
+            projectController.removeProject(project);
             showAlert(Alert.AlertType.INFORMATION, "Project Forgotten", "The project has been removed from the cache.");
             handleBackAction();
         }

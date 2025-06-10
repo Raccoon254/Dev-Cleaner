@@ -27,7 +27,7 @@ public class DevCleanerApp extends Application {
                 new Image(Objects.requireNonNull(getClass().getResourceAsStream("icons/logo-512x512.png")))
         );
 
-        stage.setTitle("Dev Cleaner Pro");
+        stage.setTitle("Dev Cleaner");
         stage.setMinWidth(900);
         stage.setMinHeight(650);
         stage.setScene(scene);

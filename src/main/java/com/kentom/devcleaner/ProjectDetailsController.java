@@ -66,6 +66,8 @@ public class ProjectDetailsController {
     private void handleCleanProject() {
         Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
         confirmation.setTitle("Confirm Cleanup");
+        // load css file for styling
+        confirmation.getDialogPane().getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
         confirmation.setHeaderText("Delete " + formatSize(project.getSizeOfCleanableItems()) + " for '" + project.getName() + "'?");
         confirmation.setContentText("This action permanently deletes files and cannot be undone.");
 
@@ -87,6 +89,7 @@ public class ProjectDetailsController {
     private void handleForgetProject() {
         Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
         confirmation.setTitle("Forget Project");
+        confirmation.getDialogPane().getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
         confirmation.setHeaderText("Remove '" + project.getName() + "' from DevCleaner?");
         confirmation.setContentText("This will remove the project from the application's cache. It will not delete any files from your disk. The project can be re-added by scanning again.");
 

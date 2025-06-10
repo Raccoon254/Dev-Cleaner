@@ -360,3 +360,140 @@
     -fx-border-radius: 12px;
     -fx-background-radius: 12px;
 }
+
+/* ===================== */
+/* MODALS & DIALOGS */
+/* ===================== */
+
+/* Modal Overlay */
+.modal-overlay {
+    -fx-background-color: rgba(12, 12, 12, 0.85);
+    -fx-backdrop-filter: blur(10px);
+}
+
+/* Modal Container */
+.modal-container {
+    -fx-background-color: #1D1D1D;
+    -fx-background-radius: 18px;
+    -fx-border-color: #3A3A3C;
+    -fx-border-width: 1px;
+    -fx-border-radius: 18px;
+    -fx-padding: 25px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 25, 0, 0, 5);
+    -fx-min-width: 400px;
+    -fx-max-width: 500px;
+}
+
+/* Modal Header */
+.modal-header {
+    -fx-padding: 0 0 15px 0;
+    -fx-alignment: center-left;
+}
+
+.modal-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #F2F2F7;
+}
+
+.modal-subtitle {
+    -fx-font-size: 16px;
+    -fx-text-fill: #8E8E93;
+    -fx-padding: 5px 0 0 0;
+}
+
+/* Modal Body */
+.modal-body {
+    -fx-padding: 15px 0;
+    -fx-spacing: 15px;
+}
+
+.modal-icon {
+    -fx-fill: #0A84FF;
+    -fx-stroke: #0A84FF;
+    -fx-scale-x: 1.5;
+    -fx-scale-y: 1.5;
+}
+
+.modal-message {
+    -fx-font-size: 16px;
+    -fx-text-fill: #EBEBF5;
+    -fx-wrap-text: true;
+    -fx-line-spacing: 5px;
+}
+
+/* Modal Footer */
+.modal-footer {
+    -fx-padding: 20px 0 0 0;
+    -fx-spacing: 12px;
+    -fx-alignment: center-right;
+}
+
+.modal-button {
+    -fx-min-width: 80px;
+    -fx-padding: 10px 20px;
+}
+
+/* Alert Variants */
+.alert-error .modal-icon {
+    -fx-fill: #FF3B30;
+    -fx-stroke: #FF3B30;
+}
+
+.alert-success .modal-icon {
+    -fx-fill: #30D158;
+    -fx-stroke: #30D158;
+}
+
+.alert-warning .modal-icon {
+    -fx-fill: #FF9500;
+    -fx-stroke: #FF9500;
+}
+
+/* Form Dialogs */
+.form-dialog .input-field {
+    -fx-background-color: #2C2C2E;
+    -fx-text-fill: #F2F2F7;
+    -fx-background-radius: 12px;
+    -fx-padding: 12px 15px;
+    -fx-font-size: 15px;
+}
+
+/* Confirmation Dialog */
+.confirmation-dialog .modal-footer {
+    -fx-alignment: center;
+}
+
+/* Progress Dialogs */
+.progress-dialog .progress-bar {
+    -fx-accent: #0A84FF;
+    -fx-background-color: #2C2C2E;
+    -fx-background-radius: 6px;
+    -fx-pref-height: 8px;
+}
+
+.progress-dialog .progress-label {
+    -fx-text-fill: #8E8E93;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 0 0 0;
+}
+
+/* Close Button */
+.modal-close {
+    -fx-background-color: transparent;
+    -fx-background-radius: 15px;
+    -fx-padding: 5px;
+    -fx-cursor: hand;
+}
+
+.modal-close SVGPath {
+    -fx-fill: #8E8E93;
+}
+
+.modal-close:hover {
+    -fx-background-color: #3A3A3C;
+}
+
+.modal-close:hover SVGPath {
+    -fx-fill: #EBEBF5;
+}

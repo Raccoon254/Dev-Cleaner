@@ -1,62 +1,94 @@
 package com.kentom.devcleaner;
 
-import com.kentom.devcleaner.model.CleanupTask;
-import com.kentom.devcleaner.model.DirectoryScanner;
-import com.kentom.devcleaner.model.LogManager;
-import com.kentom.devcleaner.model.Project;
+import com.kentom.devcleaner.model.*;
+import com.kentom.devcleaner.util.UserPreferences;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.util.Duration;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class CleanerController {
 
-    @FXML
-    private TextField directoryPathField;
-    @FXML
-    private Button scanButton;
-    @FXML
-    private ListView<Project> projectListView;
-    @FXML
-    private VBox rootVBox; // Make sure you have fx:id="rootVBox" on your root VBox in FXML
-    @FXML
-    private ProgressIndicator scanProgressIndicator;
+    @FXML private StackPane rootStackPane;
+    @FXML private VBox mainView;
+    @FXML private TextField directoryPathField;
+    @FXML private Button scanButton;
+    @FXML private TilePane projectTilePane;
+    @FXML private ScrollPane scrollPane;
+    @FXML private ProgressIndicator scanProgressIndicator;
 
     private final DirectoryScanner scanner = new DirectoryScanner();
-    private final CleanupTask cleanupTask = new CleanupTask();
+    private List<Project> activeProjects;
 
     @FXML
     private void initialize() {
-        // Set a default path for user convenience
-        directoryPathField.setText(System.getProperty("user.home"));
+        directoryPathField.setText(UserPreferences.getLastScannedPath());
         scanProgressIndicator.setVisible(false);
+        loadCachedProjects();
+    }
 
-        // Custom cell factory to render our Project objects
-        projectListView.setCellFactory(param -> new ProjectCell());
+    private void loadCachedProjects() {
+        activeProjects = ProjectCache.loadProjects();
+        if (activeProjects.isEmpty()) {
+            LogManager.log("No cached projects found. Ready for a new scan.");
+        }
+        populateGrid();
+    }
 
-        // Add a nice fade-in effect for the list
-        projectListView.setItems(FXCollections.observableArrayList());
+    private void populateGrid() {
+        Platform.runLater(() -> {
+            projectTilePane.getChildren().clear();
+            for (Project project : activeProjects) {
+                projectTilePane.getChildren().add(createProjectTile(project));
+            }
+        });
+    }
 
-        LogManager.log("Application initialized.");
+    private Node createProjectTile(Project project) {
+        VBox tile = new VBox(10);
+        tile.getStyleClass().add("project-tile");
+        tile.setAlignment(Pos.CENTER);
+
+        ImageView icon = new ImageView(project.getIcon());
+        icon.setFitHeight(50);
+        icon.setFitWidth(50);
+        icon.setPreserveRatio(true);
+
+        Label name = new Label(project.getName());
+        name.getStyleClass().add("tile-title");
+
+        Label type = new Label(project.getType().displayName + " Project");
+        type.getStyleClass().add("tile-subtitle");
+
+        tile.getChildren().addAll(icon, name, type);
+        tile.setOnMouseClicked(event -> showProjectDetails(project));
+
+        FadeTransition ft = new FadeTransition(Duration.millis(700), tile);
+        ft.setFromValue(0.0);
+        ft.setToValue(1.0);
+        ft.play();
+
+        return tile;
     }
 
     @FXML
@@ -67,7 +99,7 @@ public class CleanerController {
         if (initialDir.exists() && initialDir.isDirectory()) {
             directoryChooser.setInitialDirectory(initialDir);
         }
-        File selectedDirectory = directoryChooser.showDialog(rootVBox.getScene().getWindow());
+        File selectedDirectory = directoryChooser.showDialog(rootStackPane.getScene().getWindow());
         if (selectedDirectory != null) {
             directoryPathField.setText(selectedDirectory.getAbsolutePath());
             handleScanAction();
@@ -76,46 +108,41 @@ public class CleanerController {
 
     @FXML
     private void handleScanAction() {
-        String directoryPath = directoryPathField.getText().trim();
-        if (directoryPath.isEmpty()) {
+        String pathText = directoryPathField.getText().trim();
+        if (pathText.isEmpty()) {
             showAlert(Alert.AlertType.ERROR, "Path Required", "Please enter or browse to a directory path to scan.");
             return;
         }
 
-        Path path = Paths.get(directoryPath);
-        if (!path.toFile().exists() || !path.toFile().isDirectory()){
-            showAlert(Alert.AlertType.ERROR, "Invalid Path", "The specified path does not exist or is not a directory.");
+        Path scanPath = Paths.get(pathText);
+        if (!scanPath.toFile().isDirectory()) {
+            showAlert(Alert.AlertType.ERROR, "Invalid Directory", "The specified path is not a valid directory.");
             return;
         }
 
-        projectListView.getItems().clear();
         scanProgressIndicator.setVisible(true);
         scanButton.setDisable(true);
+        UserPreferences.setLastScannedPath(pathText);
 
-        // Run the scan on a background thread to keep the UI responsive
         Task<List<Project>> scanTask = new Task<>() {
             @Override
             protected List<Project> call() throws Exception {
-                LogManager.log("Starting scan of directory: " + directoryPath);
-                return scanner.scan(path);
+                LogManager.log("Starting scan of directory: " + pathText);
+                return scanner.scan(scanPath);
             }
         };
 
         scanTask.setOnSucceeded(event -> {
-            List<Project> projects = scanTask.getValue();
-            projectListView.setItems(FXCollections.observableArrayList(projects));
-            if (projects.isEmpty()) {
-                showAlert(Alert.AlertType.INFORMATION, "Scan Complete", "No recognizable projects found in the selected directory.");
-            }
-            LogManager.log("Scan completed. Found " + projects.size() + " projects.");
+            List<Project> newProjects = scanTask.getValue();
+            mergeAndSaveProjects(newProjects);
+            populateGrid();
             scanProgressIndicator.setVisible(false);
             scanButton.setDisable(false);
         });
 
         scanTask.setOnFailed(event -> {
-            Throwable e = scanTask.getException();
-            showAlert(Alert.AlertType.ERROR, "Scan Failed", "An error occurred during the scan: " + e.getMessage());
-            LogManager.log("Scan failed: " + e.getMessage());
+            LogManager.log("Scan failed: " + scanTask.getException().getMessage());
+            showAlert(Alert.AlertType.ERROR, "Scan Failed", "An error occurred during scanning.");
             scanProgressIndicator.setVisible(false);
             scanButton.setDisable(false);
         });
@@ -123,30 +150,45 @@ public class CleanerController {
         new Thread(scanTask).start();
     }
 
-    private void handleCleanAction(Project project) {
-        if (project.getCleanableItems().isEmpty()) {
-            showAlert(Alert.AlertType.INFORMATION, "Nothing to Clean", "This project has no items that match the cleanup rules.");
-            return;
+    private void mergeAndSaveProjects(List<Project> newProjects) {
+        Map<Path, Project> projectMap = activeProjects.stream()
+                .collect(Collectors.toMap(Project::getPath, Function.identity()));
+        for (Project newProject : newProjects) {
+            projectMap.put(newProject.getPath(), newProject);
         }
+        activeProjects = new java.util.ArrayList<>(projectMap.values());
+        ProjectCache.saveProjects(activeProjects);
+        LogManager.log("Projects merged and cache updated.");
+    }
 
-        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmation.setTitle("Confirm Cleanup");
-        confirmation.setHeaderText("Delete " + project.getCleanableItems().size() + " items for '" + project.getName() + "'?");
-        String details = "This will permanently delete " + formatSize(project.getSizeOfCleanableItems()) + " of data. This action cannot be undone.";
-        confirmation.setContentText(details);
+    public void removeProject(Project project) {
+        activeProjects.remove(project);
+        ProjectCache.saveProjects(activeProjects);
+        populateGrid();
+    }
 
-        Optional<ButtonType> result = confirmation.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            try {
-                cleanupTask.clean(project.getCleanableItems());
-                projectListView.getItems().remove(project);
-                showAlert(Alert.AlertType.INFORMATION, "Success", "Cleanup completed for '" + project.getName() + "'.");
-                LogManager.log("Cleanup completed for " + project.getName());
-            } catch (Exception e) {
-                showAlert(Alert.AlertType.ERROR, "Cleanup Failed", "An error occurred during cleanup: " + e.getMessage());
-                LogManager.log("Cleanup failed: " + e.getMessage());
-            }
+    public void showProjectDetails(Project project) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("project-details-view.fxml"));
+            Node detailsView = loader.load();
+            detailsView.setId("detailsView");
+            ProjectDetailsController controller = loader.getController();
+            controller.setProject(project, this);
+            FadeTransition ft = new FadeTransition(Duration.millis(300), detailsView);
+            ft.setFromValue(0.0);
+            ft.setToValue(1.0);
+            mainView.setEffect(new GaussianBlur(10));
+            rootStackPane.getChildren().add(detailsView);
+            ft.play();
+        } catch (IOException e) {
+            LogManager.log("Failed to load project details view: " + e.getMessage());
+            e.printStackTrace();
         }
+    }
+
+    public void hideProjectDetails() {
+        mainView.setEffect(null);
+        rootStackPane.getChildren().removeIf(node -> "detailsView".equals(node.getId()));
     }
 
     private void showAlert(Alert.AlertType alertType, String title, String message) {
@@ -157,72 +199,5 @@ public class CleanerController {
             alert.setContentText(message);
             alert.showAndWait();
         });
-    }
-
-    private String formatSize(long size) {
-        if (size < 1024) return size + " B";
-        int z = (63 - Long.numberOfLeadingZeros(size)) / 10;
-        return String.format("%.1f %sB", (double)size / (1L << (z*10)), " KMGTPE".charAt(z));
-    }
-
-    /**
-     * Custom ListCell for displaying project details in a styled card format.
-     */
-    private class ProjectCell extends ListCell<Project> {
-        private final HBox content = new HBox(15);
-        private final ImageView icon = new ImageView();
-        private final Text name = new Text();
-        private final Text path = new Text();
-        private final Text cleanableInfo = new Text();
-        private final Button cleanButton = new Button("Clean");
-        private final VBox projectDetails = new VBox(5);
-        private final Region spacer = new Region();
-
-        public ProjectCell() {
-            super();
-            // Configure the icon
-            icon.setFitWidth(40);
-            icon.setFitHeight(40);
-            icon.setPreserveRatio(true);
-            icon.setEffect(new DropShadow(5, Color.BLACK));
-
-            // Apply style classes to text elements
-            name.getStyleClass().add("project-name");
-            path.getStyleClass().add("project-path");
-            cleanableInfo.getStyleClass().add("project-info");
-
-            // Build the layout
-            projectDetails.getChildren().addAll(name, path, cleanableInfo);
-            HBox.setHgrow(spacer, Priority.ALWAYS);
-            content.setAlignment(Pos.CENTER_LEFT);
-            content.getChildren().addAll(icon, projectDetails, spacer, cleanButton);
-
-            // Add a fade-in transition when the cell appears
-            FadeTransition ft = new FadeTransition(Duration.millis(500), content);
-            ft.setFromValue(0.0);
-            ft.setToValue(1.0);
-            ft.play();
-        }
-
-        @Override
-        protected void updateItem(Project project, boolean empty) {
-            super.updateItem(project, empty);
-            if (empty || project == null) {
-                setGraphic(null);
-            } else {
-                icon.setImage(project.getIcon());
-                name.setText(project.getName());
-                path.setText(project.getPath().toString());
-                cleanableInfo.setText(project.getType().displayName + " Project • " + formatSize(project.getSizeOfCleanableItems()) + " to clean");
-
-                // Set the action for the button for this specific project
-                cleanButton.setOnAction(e -> handleCleanAction(project));
-
-                // Disable button if there's nothing to clean
-                cleanButton.setDisable(project.getCleanableItems().isEmpty());
-
-                setGraphic(content);
-            }
-        }
     }
 }

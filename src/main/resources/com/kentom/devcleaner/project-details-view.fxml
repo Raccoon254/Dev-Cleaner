@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+
+<VBox fx:id="detailsView" stylesheets="@styles.css" spacing="15.0" styleClass="details-pane"
+      xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.kentom.devcleaner.ProjectDetailsController">
+    <padding>
+        <Insets bottom="50.0" left="50.0" right="50.0" top="50.0"/>
+    </padding>
+    <Button onAction="#handleBackAction" text="‹ Back to Projects" styleClass="back-button"/>
+    <Label fx:id="projectNameLabel" styleClass="details-title" wrapText="true"/>
+    <Label fx:id="projectPathLabel" styleClass="details-path" wrapText="true"/>
+    <Label fx:id="projectDateLabel" styleClass="details-info"/>
+    <Label fx:id="projectSizeLabel" styleClass="details-info"/>
+    <HBox spacing="10">
+        <Button fx:id="cleanButton" onAction="#handleCleanProject" styleClass="button-danger" text="Clean Project"/>
+    </HBox>
+</VBox>

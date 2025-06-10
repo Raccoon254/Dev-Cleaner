@@ -3,24 +3,31 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox fx:id="rootVBox" alignment="TOP_CENTER" spacing="15.0" styleClass="root" stylesheets="@styles.css"
-      xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.kentom.devcleaner.CleanerController">
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-    </padding>
-    <Label styleClass="title" text="Dev Cleaner"/>
-    <HBox alignment="CENTER_LEFT" spacing="10.0">
-        <TextField fx:id="directoryPathField" HBox.hgrow="ALWAYS" promptText="Enter directory path or browse..."/>
-        <Button onAction="#handleBrowseAction" text="Browse..."/>
-        <Button fx:id="scanButton" onAction="#handleScanAction" text="Scan"/>
-    </HBox>
-    <ProgressIndicator fx:id="scanProgressIndicator" prefHeight="40.0" prefWidth="40.0" visible="false"/>
-    <ListView fx:id="projectListView" VBox.vgrow="ALWAYS"/>
-</VBox>
+<StackPane fx:id="rootStackPane" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/17"
+           xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kentom.devcleaner.CleanerController">
+    <VBox fx:id="mainView" alignment="TOP_CENTER" spacing="15.0" styleClass="root">
+        <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+        </padding>
+        <Label styleClass="title" text="Dev Cleaner"/>
+        <HBox alignment="CENTER_LEFT" spacing="10.0">
+            <TextField fx:id="directoryPathField" promptText="Enter directory path or browse..."
+                       HBox.hgrow="ALWAYS"/>
+            <Button onAction="#handleBrowseAction" text="Browse..."/>
+            <Button fx:id="scanButton" onAction="#handleScanAction" text="Scan"/>
+        </HBox>
+        <ProgressIndicator fx:id="scanProgressIndicator" prefHeight="40.0" prefWidth="40.0" visible="false"/>
+        <ScrollPane fx:id="scrollPane" fitToWidth="true" styleClass="scroll-pane" VBox.vgrow="ALWAYS">
+            <TilePane fx:id="projectTilePane" hgap="20" styleClass="tile-pane" vgap="20"/>
+        </ScrollPane>
+    </VBox>
+    <!-- The Project Details Pane will be added here dynamically by the controller -->
+</StackPane>

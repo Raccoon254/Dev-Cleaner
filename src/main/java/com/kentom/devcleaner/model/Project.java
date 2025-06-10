@@ -11,16 +11,17 @@ import java.util.List;
 import java.util.Objects;
 
 public class Project implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private final String name;
-    private final String pathString; // Store path as String for serialization
+    private final String pathString;
     private final ProjectType type;
     private final LocalDateTime dateCreated;
     private final List<String> cleanableItemsPaths = new ArrayList<>();
     private long sizeOfCleanableItems = 0;
 
-    private transient Image icon; // Exclude from serialization
+    private transient Image icon;
 
     public Project(Path path, ProjectType type) {
         this.name = path.getFileName().toString();
@@ -30,16 +31,19 @@ public class Project implements Serializable {
         loadIcon();
     }
 
-    // Getters
     public String getName() { return name; }
     public Path getPath() { return Paths.get(pathString); }
     public ProjectType getType() { return type; }
+    public LocalDateTime getDateCreated() { return dateCreated; }
+    public long getSizeOfCleanableItems() { return sizeOfCleanableItems; }
+
     public Image getIcon() {
         if (icon == null) {
             loadIcon();
         }
         return icon;
     }
+
     public List<Path> getCleanableItems() {
         List<Path> paths = new ArrayList<>();
         for (String p : cleanableItemsPaths) {
@@ -47,10 +51,7 @@ public class Project implements Serializable {
         }
         return paths;
     }
-    public long getSizeOfCleanableItems() { return sizeOfCleanableItems; }
-    public LocalDateTime getDateCreated() { return dateCreated; }
 
-    // Public methods
     public void addCleanableItem(Path item, long size) {
         this.cleanableItemsPaths.add(item.toAbsolutePath().toString());
         this.sizeOfCleanableItems += size;
@@ -58,7 +59,8 @@ public class Project implements Serializable {
 
     private void loadIcon() {
         try {
-            this.icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/kentom/devcleaner/icons/" + type.iconName)));
+            String iconPath = "/com/kentom/devcleaner/icons/" + type.iconName;
+            this.icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream(iconPath)));
         } catch (Exception e) {
             this.icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/kentom/devcleaner/icons/default.png")));
         }

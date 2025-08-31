@@ -143,7 +143,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <mainClass>${main.class}</mainClass>
+                    <mainClass>com.kentom.devcleaner/com.kentom.devcleaner.DevCleanerApp</mainClass>
                 </configuration>
             </plugin>
 

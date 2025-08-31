@@ -465,6 +465,308 @@
     -fx-text-alignment: center;
 }
 
+/* --- ENHANCED DASHBOARD --- */
+.dashboard-container {
+    -fx-padding: 30px;
+    -fx-spacing: 30px;
+}
+
+.dashboard-header {
+    -fx-alignment: center-left;
+    -fx-padding: 0 0 20 0;
+    -fx-border-color: #2A2A2B;
+    -fx-border-width: 0 0 1px 0;
+}
+
+.dashboard-icon {
+    -fx-effect: dropshadow(gaussian, rgba(10, 132, 255, 0.3), 8, 0, 0, 2);
+}
+
+.dashboard-title {
+    -fx-font-size: 28px;
+    -fx-text-fill: #F2F2F7;
+    -fx-font-weight: 700;
+}
+
+.dashboard-subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: #8E8E93;
+    -fx-font-weight: 500;
+}
+
+.stats-grid {
+    -fx-alignment: center;
+    -fx-padding: 10px 0;
+}
+
+.primary-stat-card {
+    -fx-background-color: #1A1A1B;
+    -fx-background-radius: 16px;
+    -fx-padding: 24px;
+    -fx-border-color: #2A2A2B;
+    -fx-border-width: 1px;
+    -fx-border-radius: 16px;
+    -fx-min-height: 120px;
+}
+
+.primary-stat-card:hover {
+    -fx-border-color: #0A84FF;
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+.warning-card {
+    -fx-border-color: #FF9500;
+}
+
+.success-card {
+    -fx-border-color: #30D158;
+}
+
+.primary-stat-card.warning-card {
+    -fx-border-color: #FF9500;
+    -fx-background-color: rgba(255, 149, 0, 0.1);
+}
+
+.primary-stat-card.warning-card:hover {
+    -fx-border-color: #FF9500;
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+    -fx-background-color: rgba(255, 149, 0, 0.15);
+}
+
+.primary-stat-card.success-card {
+    -fx-border-color: #30D158;
+    -fx-background-color: rgba(48, 209, 88, 0.1);
+}
+
+.primary-stat-card.success-card:hover {
+    -fx-border-color: #30D158;
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+    -fx-background-color: rgba(48, 209, 88, 0.15);
+}
+
+.stat-icon {
+    -fx-opacity: 0.9;
+}
+
+.stat-title {
+    -fx-font-size: 13px;
+    -fx-text-fill: #8E8E93;
+    -fx-font-weight: 600;
+}
+
+.primary-stat-value {
+    -fx-font-size: 24px;
+    -fx-text-fill: #F2F2F7;
+    -fx-font-weight: 700;
+}
+
+.stat-trend {
+    -fx-font-size: 12px;
+    -fx-text-fill: #30D158;
+    -fx-font-weight: 600;
+}
+
+.usage-progress {
+    -fx-accent: #0A84FF;
+    -fx-background-color: #2A2A2B;
+    -fx-background-radius: 8px;
+}
+
+.stat-savings {
+    -fx-font-size: 12px;
+    -fx-text-fill: #FF9500;
+    -fx-font-weight: 600;
+}
+
+.stat-percentage {
+    -fx-font-size: 12px;
+    -fx-text-fill: #30D158;
+    -fx-font-weight: 600;
+}
+
+.secondary-stats {
+    -fx-alignment: center;
+    -fx-spacing: 20px;
+}
+
+.secondary-stat-card {
+    -fx-background-color: #1A1A1B;
+    -fx-background-radius: 12px;
+    -fx-padding: 20px;
+    -fx-border-color: #2A2A2B;
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+    -fx-min-height: 180px;
+}
+
+.action-card {
+    -fx-border-color: #0A84FF;
+}
+
+.secondary-stat-title {
+    -fx-font-size: 16px;
+    -fx-text-fill: #F2F2F7;
+    -fx-font-weight: 600;
+}
+
+.type-breakdown-row {
+    -fx-alignment: center-left;
+    -fx-spacing: 8px;
+    -fx-padding: 4px 0;
+}
+
+.type-name {
+    -fx-font-size: 13px;
+    -fx-text-fill: #F2F2F7;
+    -fx-font-weight: 500;
+}
+
+.type-count {
+    -fx-font-size: 12px;
+    -fx-text-fill: #0A84FF;
+    -fx-font-weight: 600;
+}
+
+.large-project-row {
+    -fx-alignment: center-left;
+    -fx-spacing: 10px;
+    -fx-padding: 4px 0;
+}
+
+.project-name {
+    -fx-font-size: 13px;
+    -fx-text-fill: #F2F2F7;
+    -fx-font-weight: 500;
+}
+
+.project-size {
+    -fx-font-size: 12px;
+    -fx-text-fill: #FF9500;
+    -fx-font-weight: 600;
+}
+
+.quick-action {
+    -fx-alignment: center-left;
+    -fx-spacing: 8px;
+    -fx-padding: 6px;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+}
+
+.quick-action:hover {
+    -fx-background-color: #0A84FF;
+}
+
+.action-text {
+    -fx-font-size: 13px;
+    -fx-text-fill: #F2F2F7;
+    -fx-font-weight: 500;
+}
+
+.analytics-grid {
+    -fx-alignment: center;
+    -fx-padding: 10px 0;
+}
+
+.analytics-card {
+    -fx-background-color: #1A1A1B;
+    -fx-background-radius: 12px;
+    -fx-padding: 20px;
+    -fx-border-color: #2A2A2B;
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+    -fx-min-height: 250px;
+}
+
+.analytics-title {
+    -fx-font-size: 16px;
+    -fx-text-fill: #F2F2F7;
+    -fx-font-weight: 600;
+}
+
+.activity-scroll {
+    -fx-background-color: transparent;
+}
+
+.activity-container {
+    -fx-spacing: 8px;
+}
+
+.activity-row {
+    -fx-alignment: center-left;
+    -fx-spacing: 8px;
+    -fx-padding: 6px 0;
+    -fx-border-color: #2A2A2B;
+    -fx-border-width: 0 0 1px 0;
+}
+
+.activity-time {
+    -fx-font-size: 11px;
+    -fx-text-fill: #6E6E73;
+    -fx-font-weight: 500;
+    -fx-min-width: 50px;
+}
+
+.activity-action {
+    -fx-font-size: 12px;
+    -fx-text-fill: #0A84FF;
+    -fx-font-weight: 600;
+}
+
+.activity-project {
+    -fx-font-size: 12px;
+    -fx-text-fill: #F2F2F7;
+    -fx-font-weight: 500;
+}
+
+.empty-activity {
+    -fx-font-size: 14px;
+    -fx-text-fill: #6E6E73;
+    -fx-font-weight: 500;
+    -fx-alignment: center;
+}
+
+.activity-suggestion {
+    -fx-font-size: 12px;
+    -fx-text-fill: #8E8E93;
+    -fx-font-weight: 400;
+    -fx-alignment: center;
+}
+
+.health-metric {
+    -fx-font-size: 13px;
+    -fx-text-fill: #8E8E93;
+    -fx-font-weight: 500;
+    -fx-min-width: 100px;
+}
+
+.health-value {
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+}
+
+.health-value.good {
+    -fx-text-fill: #30D158;
+}
+
+.health-value.warning {
+    -fx-text-fill: #FF9500;
+}
+
+.health-value.error {
+    -fx-text-fill: #FF453A;
+}
+
+.empty-breakdown {
+    -fx-font-size: 13px;
+    -fx-text-fill: #6E6E73;
+    -fx-font-weight: 500;
+    -fx-alignment: center;
+}
+
 .empty-state-icon {
     -fx-fill: #3A3A3C;
     -fx-scale-x: 4;

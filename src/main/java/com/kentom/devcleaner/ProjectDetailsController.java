@@ -38,6 +38,12 @@ public class ProjectDetailsController {
     @FXML private Button cleanButton;
     @FXML private HBox projectActionsBox;
     @FXML private VBox cleanableItemsContainer;
+    @FXML private VBox gitInfoSection;
+    @FXML private Label gitBranchLabel;
+    @FXML private Label gitStatusLabel;
+    @FXML private Label gitRemoteLabel;
+    @FXML private Label gitSizeLabel;
+    @FXML private Label gitCommitsLabel;
 
     private Project project;
     private ProjectsController projectController;
@@ -62,6 +68,9 @@ public class ProjectDetailsController {
         // Setup project actions
         setupProjectActions();
         
+        // Setup Git info
+        setupGitInfo();
+        
         // Setup enhanced cleanable items view
         setupCleanableItemsView();
 
@@ -74,7 +83,7 @@ public class ProjectDetailsController {
         // Add project type-specific actions
         switch (project.getType()) {
             case NODE:
-                addActionButton("npm install", "node.png", "action-button-success", this::runNpmInstall);
+                addActionButton("npm install", "js-logo.png", "action-button-warning", this::runNpmInstall);
                 addActionButton("npm audit", "security.png", "action-button-warning", this::runNpmAudit);
                 break;
             case MAVEN:
@@ -92,6 +101,13 @@ public class ProjectDetailsController {
         
         // Always add open in terminal
         addActionButton("Open Terminal", "terminal.png", "project-action-button", this::openTerminal);
+        
+        // Add Git actions if it's a Git repository
+        GitInfo gitInfo = project.getGitInfo();
+        if (gitInfo.isGitRepository()) {
+            addActionButton("git status", "github.png", "project-action-button", this::runGitStatus);
+            addActionButton("git pull", "github.png", "action-button-success", this::runGitPull);
+        }
     }
 
     private void addActionButton(String text, String iconName, String styleClass, Runnable action) {
@@ -110,6 +126,43 @@ public class ProjectDetailsController {
         
         button.setOnAction(e -> action.run());
         projectActionsBox.getChildren().add(button);
+    }
+
+    private void setupGitInfo() {
+        GitInfo gitInfo = project.getGitInfo();
+        
+        if (!gitInfo.isGitRepository()) {
+            gitInfoSection.setVisible(false);
+            gitInfoSection.setManaged(false);
+            return;
+        }
+        
+        gitInfoSection.setVisible(true);
+        gitInfoSection.setManaged(true);
+        
+        // Branch and status
+        String branchText = "Branch: " + (gitInfo.getCurrentBranch() != null ? gitInfo.getCurrentBranch() : "unknown");
+        gitBranchLabel.setText(branchText);
+        
+        String statusText = gitInfo.hasUncommittedChanges() ? "Uncommitted changes" : "Clean";
+        String statusClass = gitInfo.hasUncommittedChanges() ? "git-status-dirty" : "git-status-clean";
+        gitStatusLabel.setText(statusText);
+        gitStatusLabel.getStyleClass().removeAll("git-status-dirty", "git-status-clean");
+        gitStatusLabel.getStyleClass().add(statusClass);
+        
+        // Remote URL
+        String remote = gitInfo.getRepositoryName();
+        if (remote != null) {
+            gitRemoteLabel.setText("Remote: " + remote);
+        } else if (gitInfo.getRemoteUrl() != null) {
+            gitRemoteLabel.setText("Remote: " + gitInfo.getRemoteUrl());
+        } else {
+            gitRemoteLabel.setText("No remote configured");
+        }
+        
+        // Git folder size and commit count
+        gitSizeLabel.setText(".git size: " + gitInfo.getFormattedGitSize());
+        gitCommitsLabel.setText("Commits: " + gitInfo.getCommitCount());
     }
 
     private void setupCleanableItemsView() {
@@ -245,7 +298,8 @@ public class ProjectDetailsController {
 
     @FXML
     private void handleBackAction() {
-        mainController.hideProjectDetails(detailsView);
+        //mainController.hideProjectDetails(detailsView);
+        mainController.showProjects();
     }
 
     @FXML
@@ -340,6 +394,14 @@ public class ProjectDetailsController {
     
     private void runPipInstall() {
         runCommand("pip install -r requirements.txt", "Installing Python dependencies...");
+    }
+    
+    private void runGitStatus() {
+        runCommand("git status", "Checking Git status...");
+    }
+    
+    private void runGitPull() {
+        runCommand("git pull", "Pulling latest changes...");
     }
     
     private void openTerminal() {

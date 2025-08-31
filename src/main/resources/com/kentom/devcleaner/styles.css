@@ -299,7 +299,7 @@
 }
 
 .back-button:hover {
-    -fx-underline: true;
+    -fx-border-color: rgb(10, 132, 255);
 }
 
 .details-title {
@@ -477,6 +477,26 @@
 
 .git-status-badge.no-remote {
     -fx-background-color: #8E8E93;
+}
+.git-status-clean {
+    -fx-background-color: #30D158;
+    -fx-text-fill: white;
+    -fx-font-size: 10px;
+    -fx-font-weight: 700;
+    -fx-background-radius: 8px;
+    -fx-padding: 2px 6px;
+    -fx-min-width: 20px;
+    -fx-alignment: center;
+}
+.git-status-dirty {
+    -fx-background-color: #FF9500;
+    -fx-text-fill: white;
+    -fx-font-size: 10px;
+    -fx-font-weight: 700;
+    -fx-background-radius: 8px;
+    -fx-padding: 2px 6px;
+    -fx-min-width: 20px;
+    -fx-alignment: center;
 }
 
 /* --- SCROLL & SETTINGS --- */

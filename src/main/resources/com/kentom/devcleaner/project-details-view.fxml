@@ -6,102 +6,108 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.Priority?>
 
 <?import javafx.scene.image.Image?>
-<VBox fx:id="detailsView" stylesheets="@buttons_detail.css" styleClass="details-pane" spacing="15.0"
-      xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.kentom.devcleaner.ProjectDetailsController">
-    <padding>
-        <Insets bottom="40.0" left="40.0" right="40.0" top="20.0"/>
-    </padding>
+<ScrollPane fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS" styleClass="transparent-scroll-pane"
+            fx:controller="com.kentom.devcleaner.ProjectDetailsController"
+            xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+    <VBox fx:id="detailsView" stylesheets="@buttons_detail.css" styleClass="details-pane" spacing="15.0">
+        <padding>
+            <Insets bottom="40.0" left="20.0" right="20.0" top="20.0"/>
+        </padding>
 
-    <Button onAction="#handleBackAction" text="‹ Back to Dashboard" styleClass="back-button"/>
-
-    <HBox spacing="20" alignment="CENTER_LEFT" style="-fx-padding: 20 0 10 0;">
-        <ImageView fx:id="projectIcon" fitHeight="64" fitWidth="64" preserveRatio="true"/>
-        <VBox spacing="5" HBox.hgrow="ALWAYS">
-            <Label fx:id="projectNameLabel" styleClass="details-title" wrapText="true"/>
-            <HBox spacing="10" alignment="CENTER_LEFT">
-                <Label fx:id="projectPathLabel" styleClass="details-path" wrapText="true" HBox.hgrow="ALWAYS"/>
-                <Button onAction="#handleCopyPath" styleClass="copy-path-button" text="Copy Path">
-                    <graphic>
-                        <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
-                            <Image url="@icons/copy.png"/>
-                        </ImageView>
-                    </graphic>
-                </Button>
+        <Button onAction="#handleBackAction" text="‹ Back to Projects" styleClass="back-button"/>
+        <VBox spacing="15.0">
+            <HBox spacing="20" alignment="CENTER_LEFT" style="-fx-padding: 20 0 10 0;">
+                <ImageView fx:id="projectIcon" fitHeight="64" fitWidth="64" preserveRatio="true"/>
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label fx:id="projectNameLabel" styleClass="details-title" wrapText="true"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label fx:id="projectPathLabel" styleClass="details-path" wrapText="true" HBox.hgrow="ALWAYS"/>
+                        <Button onAction="#handleCopyPath" styleClass="copy-path-button" text="Copy Path">
+                            <graphic>
+                                <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
+                                    <Image url="@icons/copy.png"/>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                    </HBox>
+                </VBox>
             </HBox>
-        </VBox>
-    </HBox>
 
-    <Label fx:id="projectSizeLabel" styleClass="details-info-header"/>
-    <Label fx:id="projectDateLabel" styleClass="details-info"/>
-    
-    <!-- Git Repository Info -->
-    <VBox fx:id="gitInfoSection" spacing="8" visible="false" style="-fx-padding: 15 0;">
-        <Label text="Git Repository" styleClass="details-info-header"/>
-        <HBox spacing="15" alignment="CENTER_LEFT">
-            <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
-                <Image url="@icons/git.png"/>
-            </ImageView>
-            <VBox spacing="4">
-                <HBox spacing="10" alignment="CENTER_LEFT">
-                    <Label fx:id="gitBranchLabel" styleClass="git-info-text"/>
-                    <Label fx:id="gitStatusLabel" styleClass="git-status-badge"/>
-                </HBox>
-                <Label fx:id="gitRemoteLabel" styleClass="git-info-secondary"/>
+            <Label fx:id="projectSizeLabel" styleClass="details-info-header"/>
+            <Label fx:id="projectDateLabel" styleClass="details-info"/>
+
+            <!-- Git Repository Info -->
+            <VBox fx:id="gitInfoSection" spacing="8" visible="false" style="-fx-padding: 15 0;">
+                <Label text="Git Repository" styleClass="details-info-header"/>
                 <HBox spacing="15" alignment="CENTER_LEFT">
-                    <Label fx:id="gitSizeLabel" styleClass="git-info-secondary"/>
-                    <Label fx:id="gitCommitsLabel" styleClass="git-info-secondary"/>
+                    <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
+                        <Image url="@icons/github.png"/>
+                    </ImageView>
+                    <VBox spacing="4">
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Label fx:id="gitBranchLabel" styleClass="git-info-text"/>
+                            <Label fx:id="gitStatusLabel" styleClass="git-status-badge"/>
+                        </HBox>
+                        <Label fx:id="gitRemoteLabel" styleClass="git-info-secondary"/>
+                        <HBox spacing="15" alignment="CENTER_LEFT">
+                            <Label fx:id="gitSizeLabel" styleClass="git-info-secondary"/>
+                            <Label fx:id="gitCommitsLabel" styleClass="git-info-secondary"/>
+                        </HBox>
+                    </VBox>
                 </HBox>
             </VBox>
+
+            <!-- Project Actions -->
+            <HBox fx:id="projectActionsBox" spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 10 0;">
+                <Label text="Quick Actions:" styleClass="details-info-header"/>
+            </HBox>
+
+            <!-- Cleanable Items with Enhanced View -->
+            <VBox spacing="10" VBox.vgrow="ALWAYS" style="-fx-padding: 10 0 10 0;">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Cleanable Files &amp; Folders:" styleClass="details-info-header"/>
+                    <Label fx:id="itemCountLabel" styleClass="details-info" text=""/>
+                </HBox>
+                <VBox fx:id="cleanableItemsContainer" styleClass="cleanable-items-container" spacing="5"
+                      VBox.vgrow="ALWAYS"/>
+            </VBox>
+        </VBox>
+
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Button fx:id="backButton" styleClass="back-button" onAction="#handleBackAction" text="Back">
+                <graphic>
+                    <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
+                        <Image url="@icons/arrow-left.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button fx:id="scanButton" styleClass="scan-project-button" onAction="#handleScanProject"
+                    text="Scan Project">
+                <graphic>
+                    <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
+                        <Image url="@icons/scan.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button fx:id="cleanButton" styleClass="clean-button" onAction="#handleCleanProject" text="Clean Project">
+                <graphic>
+                    <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
+                        <Image url="@icons/clean.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button onAction="#handleForgetProject" styleClass="button-danger" text="Forget Project">
+                <graphic>
+                    <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
+                        <Image url="@icons/trash.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
         </HBox>
     </VBox>
-
-    <!-- Project Actions -->
-    <HBox fx:id="projectActionsBox" spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 10 0;">
-        <Label text="Quick Actions:" styleClass="details-info-header"/>
-    </HBox>
-
-    <!-- Cleanable Items with Enhanced View -->
-    <VBox spacing="10" VBox.vgrow="ALWAYS" style="-fx-padding: 10 0 10 0;">
-        <HBox alignment="CENTER_LEFT" spacing="10">
-            <Label text="Cleanable Files &amp; Folders:" styleClass="details-info-header"/>
-            <Label fx:id="itemCountLabel" styleClass="details-info" text=""/>
-        </HBox>
-        <VBox fx:id="cleanableItemsContainer" styleClass="cleanable-items-container" spacing="5" VBox.vgrow="ALWAYS"/>
-    </VBox>
-
-    <HBox spacing="10" alignment="CENTER_LEFT">
-        <Button fx:id="backButton" styleClass="back-button" onAction="#handleBackAction" text="Back">
-            <graphic>
-                <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
-                    <Image url="@icons/arrow-left.png"/>
-                </ImageView>
-            </graphic>
-        </Button>
-        <Button fx:id="scanButton" styleClass="scan-project-button" onAction="#handleScanProject" text="Scan Project">
-            <graphic>
-                <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
-                    <Image url="@icons/scanning.png"/>
-                </ImageView>
-            </graphic>
-        </Button>
-        <Button fx:id="cleanButton" styleClass="clean-button" onAction="#handleCleanProject" text="Clean Project">
-            <graphic>
-                <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
-                    <Image url="@icons/clean.png"/>
-                </ImageView>
-            </graphic>
-        </Button>
-        <Button onAction="#handleForgetProject" styleClass="button-danger" text="Forget Project">
-            <graphic>
-                <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
-                    <Image url="@icons/close.png"/>
-                </ImageView>
-            </graphic>
-        </Button>
-    </HBox>
-</VBox>
+</ScrollPane>

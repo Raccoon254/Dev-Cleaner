@@ -38,7 +38,7 @@
                 <VBox styleClass="dashboard-header" spacing="12">
                     <HBox alignment="CENTER_LEFT" spacing="15">
                         <ImageView fitHeight="32" fitWidth="32" preserveRatio="true" styleClass="dashboard-icon">
-                            <Image url="@icons/dashboard.png"/>
+                            <Image url="@icons/dash.png"/>
                         </ImageView>
                         <VBox spacing="2">
                             <Label styleClass="dashboard-title" text="DevCleaner Dashboard"/>
@@ -164,7 +164,7 @@
                     <VBox styleClass="analytics-card" spacing="15" GridPane.columnIndex="0" GridPane.rowIndex="0">
                         <HBox alignment="CENTER_LEFT" spacing="10">
                             <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
-                                <Image url="@icons/activity.png"/>
+                                <Image url="@icons/clock-sort.png"/>
                             </ImageView>
                             <Label styleClass="analytics-title" text="Recent Activity"/>
                         </HBox>
@@ -177,7 +177,7 @@
                     <VBox styleClass="analytics-card" spacing="15" GridPane.columnIndex="1" GridPane.rowIndex="0">
                         <HBox alignment="CENTER_LEFT" spacing="10">
                             <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
-                                <Image url="@icons/health.png"/>
+                                <Image url="@icons/logo-256x256.png"/>
                             </ImageView>
                             <Label styleClass="analytics-title" text="System Health"/>
                         </HBox>

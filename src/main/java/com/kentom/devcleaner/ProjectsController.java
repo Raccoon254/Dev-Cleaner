@@ -27,7 +27,7 @@ public class ProjectsController {
 
     @FXML private TilePane projectTilePane;
     @FXML private VBox emptyStateBox;
-    @FXML private HBox projectStatsBox;
+    @FXML private VBox projectStatsBox;
     @FXML private Label totalProjectsLabel;
     @FXML private Label totalCleanableLabel;
     @FXML private Label projectTypesLabel;
@@ -47,7 +47,18 @@ public class ProjectsController {
     @FXML
     private void initialize() {
         updateSortButtons();
+        setupResponsiveTilePane();
         refreshProjects();
+    }
+    
+    private void setupResponsiveTilePane() {
+        // Make TilePane responsive - calculate columns based on available width
+        projectTilePane.widthProperty().addListener((obs, oldWidth, newWidth) -> {
+            double tileWidth = 220; // tile width + gap
+            double availableWidth = newWidth.doubleValue() - 40; // subtract padding
+            int columns = Math.max(1, (int) (availableWidth / tileWidth));
+            projectTilePane.setPrefColumns(columns);
+        });
     }
 
     public void refreshProjects() {
@@ -89,40 +100,18 @@ public class ProjectsController {
         tile.getStyleClass().add("project-tile");
         tile.setAlignment(Pos.CENTER);
 
-        // Top section with icon and git indicator
-        HBox topSection = new HBox(8);
-        topSection.setAlignment(Pos.CENTER);
-        
+        // Project icon
         ImageView icon = new ImageView(project.getIcon());
-        icon.setFitHeight(52);
-        icon.setFitWidth(52);
+        icon.setFitHeight(56);
+        icon.setFitWidth(56);
         icon.setPreserveRatio(true);
-        topSection.getChildren().add(icon);
-        
-        // Git indicator
-        GitInfo gitInfo = project.getGitInfo();
-        if (gitInfo.isGitRepository()) {
-            ImageView gitIcon = new ImageView();
-            try {
-                gitIcon.setImage(new javafx.scene.image.Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/kentom/devcleaner/icons/github.png"))));
-                gitIcon.setFitHeight(16);
-                gitIcon.setFitWidth(16);
-                gitIcon.setPreserveRatio(true);
-                gitIcon.getStyleClass().add("git-icon");
-                topSection.getChildren().add(gitIcon);
-            } catch (Exception e) {
-                // Fallback if icon not found
-                Label gitLabel = new Label("Git");
-                gitLabel.getStyleClass().add("git-badge");
-                topSection.getChildren().add(gitLabel);
-            }
-        }
 
-        // Project name
+        // Project name (centered)
         Label name = new Label(formatProjectName(project.getName()));
         name.getStyleClass().add("tile-title");
         name.setWrapText(true);
-        name.setMaxWidth(160);
+        name.setMaxWidth(180);
+        name.setAlignment(Pos.CENTER);
 
         // Project info section
         VBox infoSection = new VBox(4);
@@ -148,8 +137,44 @@ public class ProjectsController {
         dateInfo.getStyleClass().add("tile-date");
         
         infoSection.getChildren().addAll(typeAndSize, dateInfo);
+        
+        // Add spacer to push powered by section to bottom
+        javafx.scene.layout.Region spacer = new javafx.scene.layout.Region();
+        VBox.setVgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
+        
+        // Powered by section at bottom
+        HBox poweredBySection = new HBox(4);
+        poweredBySection.setAlignment(Pos.CENTER);
+        poweredBySection.getStyleClass().add("powered-by-section");
+        
+        GitInfo gitInfo = project.getGitInfo();
+        if (gitInfo.isGitRepository()) {
+            Label poweredByLabel = new Label("powered by");
+            poweredByLabel.getStyleClass().add("powered-by-label");
+            
+            ImageView gitIcon = new ImageView();
+            try {
+                gitIcon.setImage(new javafx.scene.image.Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/kentom/devcleaner/icons/github.png"))));
+                gitIcon.setFitHeight(12);
+                gitIcon.setFitWidth(12);
+                gitIcon.setPreserveRatio(true);
+                gitIcon.getStyleClass().add("powered-by-icon");
+            } catch (Exception e) {
+                // Fallback if icon not found
+                gitIcon = null;
+            }
+            
+            Label gitLabel = new Label("Git");
+            gitLabel.getStyleClass().add("powered-by-text");
+            
+            poweredBySection.getChildren().add(poweredByLabel);
+            if (gitIcon != null) {
+                poweredBySection.getChildren().add(gitIcon);
+            }
+            poweredBySection.getChildren().add(gitLabel);
+        }
 
-        tile.getChildren().addAll(topSection, name, infoSection);
+        tile.getChildren().addAll(icon, name, infoSection, spacer, poweredBySection);
         tile.setOnMouseClicked(event -> showProjectDetails(project));
 
         FadeTransition ft = new FadeTransition(Duration.millis(500), tile);

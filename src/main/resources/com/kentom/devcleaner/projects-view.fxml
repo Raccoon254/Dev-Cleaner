@@ -18,62 +18,71 @@
         <ScrollPane fitToWidth="true" styleClass="scroll-pane" VBox.vgrow="ALWAYS">
             <VBox styleClass="projects-container" style="-fx-padding: 0 20;">
                 <!-- Projects Header -->
-                <VBox styleClass="projects-header" spacing="15">
-                    <Label styleClass="view-title" text="Projects"/>
-                    <Label styleClass="view-subtitle" wrapText="true"
-                           text="Manage your development projects. Click any project to view details and clean up generated files."/>
+                <VBox styleClass="projects-header" spacing="24">
+                    <!-- Title Section -->
+                    <VBox styleClass="header-title-section" spacing="8">
+                        <Label styleClass="view-title" text="Projects"/>
+                        <Label styleClass="view-subtitle" wrapText="true"
+                               text="Manage your development projects. Click any project to view details and clean up generated files."/>
+                    </VBox>
                     
-                    <!-- Project Stats and Sort Controls -->
-                    <HBox fx:id="projectStatsBox" spacing="20" alignment="CENTER_LEFT" visible="false">
-                        <VBox styleClass="header-stat-item" spacing="5">
-                            <Label styleClass="stat-number" fx:id="totalProjectsLabel" text="0"/>
-                            <Label styleClass="stat-label" text="Projects"/>
-                        </VBox>
-                        <VBox styleClass="header-stat-item" spacing="5">
-                            <Label styleClass="stat-number" fx:id="totalCleanableLabel" text="0 GB"/>
-                            <Label styleClass="stat-label" text="Cleanable"/>
-                        </VBox>
-                        <VBox styleClass="header-stat-item" spacing="5">
-                            <Label styleClass="stat-number" fx:id="projectTypesLabel" text="0"/>
-                            <Label styleClass="stat-label" text="Types"/>
-                        </VBox>
-                        
-                        <!-- Sort Controls -->
-                        <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 0 0 0 30;">
-                            <Label text="Sort by:" styleClass="sort-label"/>
-                            <Button fx:id="sortNameBtn" onAction="#sortByName" styleClass="sort-button" text="Name">
-                                <graphic>
-                                    <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
-                                        <Image url="@icons/sort-by-alphabet.png"/>
-                                    </ImageView>
-                                </graphic>
-                            </Button>
-                            <Button fx:id="sortSizeBtn" onAction="#sortBySize" styleClass="sort-button" text="Size">
-                                <graphic>
-                                    <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
-                                        <Image url="@icons/sort-by-size.png"/>
-                                    </ImageView>
-                                </graphic>
-                            </Button>
-                            <Button fx:id="sortDateBtn" onAction="#sortByDate" styleClass="sort-button" text="Date">
-                                <graphic>
-                                    <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
-                                        <Image url="@icons/sort-by-time.png"/>
-                                    </ImageView>
-                                </graphic>
-                            </Button>
-                            <Button fx:id="sortTypeBtn" onAction="#sortByType" styleClass="sort-button" text="Type">
-                                <graphic>
-                                    <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
-                                        <Image url="@icons/terminal.png"/>
-                                    </ImageView>
-                                </graphic>
-                            </Button>
+                    <!-- Stats and Controls Section -->
+                    <VBox fx:id="projectStatsBox" styleClass="header-stats-container" spacing="20" visible="false">
+                        <!-- Project Stats Row -->
+                        <HBox styleClass="stats-row" spacing="30" alignment="CENTER_LEFT">
+                            <VBox styleClass="header-stat-item" spacing="4">
+                                <Label styleClass="stat-number" fx:id="totalProjectsLabel" text="0"/>
+                                <Label styleClass="stat-label" text="Projects"/>
+                            </VBox>
+                            <VBox styleClass="header-stat-item" spacing="4">
+                                <Label styleClass="stat-number" fx:id="totalCleanableLabel" text="0 GB"/>
+                                <Label styleClass="stat-label" text="Cleanable Size"/>
+                            </VBox>
+                            <VBox styleClass="header-stat-item" spacing="4">
+                                <Label styleClass="stat-number" fx:id="projectTypesLabel" text="0"/>
+                                <Label styleClass="stat-label" text="Project Types"/>
+                            </VBox>
                         </HBox>
-                    </HBox>
+                        
+                        <!-- Sort Controls Row -->
+                        <HBox styleClass="sort-controls-row" spacing="12" alignment="CENTER_LEFT">
+                            <Label text="Sort by:" styleClass="sort-label"/>
+                            <HBox spacing="8" alignment="CENTER_LEFT">
+                                <Button fx:id="sortNameBtn" onAction="#sortByName" styleClass="sort-button" text="Name">
+                                    <graphic>
+                                        <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
+                                            <Image url="@icons/sort-by-alphabet.png"/>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                                <Button fx:id="sortSizeBtn" onAction="#sortBySize" styleClass="sort-button" text="Size">
+                                    <graphic>
+                                        <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
+                                            <Image url="@icons/sort-by-size.png"/>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                                <Button fx:id="sortDateBtn" onAction="#sortByDate" styleClass="sort-button" text="Date">
+                                    <graphic>
+                                        <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
+                                            <Image url="@icons/sort-by-time.png"/>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                                <Button fx:id="sortTypeBtn" onAction="#sortByType" styleClass="sort-button" text="Type">
+                                    <graphic>
+                                        <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
+                                            <Image url="@icons/terminal.png"/>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                            </HBox>
+                        </HBox>
+                    </VBox>
                 </VBox>
                 
-                <TilePane style="-fx-padding: 20px 0" fx:id="projectTilePane" hgap="20" vgap="20"/>
+                <TilePane style="-fx-padding: 20px 0" fx:id="projectTilePane" hgap="20" vgap="20" 
+                         prefColumns="-1" prefRows="-1" tileAlignment="CENTER"/>
             </VBox>
         </ScrollPane>
 

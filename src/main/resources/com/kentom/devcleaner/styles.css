@@ -242,27 +242,27 @@
 /* --- PROJECT CARDS (Enhanced) --- */
 .project-tile {
     -fx-background-color: #171718;
-    -fx-padding: 20px;
+    -fx-padding: 18px;
     -fx-background-radius: 16px;
     -fx-alignment: center;
     -fx-cursor: hand;
     -fx-transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     -fx-pref-width: 200;
-    -fx-min-height: 180;
 }
 .project-tile:hover {
     -fx-background-color: #1A1A1B;
-    -fx-border-color: #0A84FF;
-    -fx-border-width: 1px;
+    -fx-effect: dropshadow(gaussian, rgb(10, 132, 255), 2, 0, 0, 0);
     -fx-border-radius: 16px;
     -fx-scale-x: 1.02;
     -fx-scale-y: 1.02;
 }
+
 .tile-title {
     -fx-font-size: 16px;
     -fx-text-fill: white;
     -fx-font-weight: 600;
     -fx-text-alignment: center;
+    -fx-alignment: center;
 }
 .tile-subtitle {
     -fx-font-size: 13px;
@@ -285,17 +285,21 @@
     -fx-font-weight: 500;
     -fx-text-alignment: center;
 }
-.git-icon {
-    -fx-opacity: 0.8;
+.powered-by-section {
+    -fx-padding: 4px 0 0 0;
 }
-.git-badge {
-    -fx-background-color: #30D158;
-    -fx-text-fill: white;
-    -fx-font-size: 8px;
-    -fx-font-weight: 700;
-    -fx-background-radius: 8px;
-    -fx-padding: 2px 4px;
-    -fx-alignment: center;
+.powered-by-label {
+    -fx-font-size: 9px;
+    -fx-text-fill: #6E6E73;
+    -fx-font-weight: 500;
+}
+.powered-by-text {
+    -fx-font-size: 9px;
+    -fx-text-fill: #30D158;
+    -fx-font-weight: 600;
+}
+.powered-by-icon {
+    -fx-opacity: 0.7;
 }
 
 /* --- SORT CONTROLS --- */
@@ -330,6 +334,74 @@
 .sort-button-active:hover {
     -fx-background-color: #0969DA;
     -fx-border-color: #0969DA;
+}
+
+/* --- SPLASH SCREEN --- */
+.splash-container {
+    -fx-background-color: #0C0C0CFF;
+    -fx-alignment: center;
+    -fx-spacing: 30px;
+    -fx-padding: 50px;
+}
+
+.splash-title {
+    -fx-font-size: 36px;
+    -fx-text-fill: white;
+    -fx-font-weight: 700;
+    -fx-text-alignment: center;
+}
+
+.splash-subtitle {
+    -fx-font-size: 16px;
+    -fx-text-fill: #8E8E93;
+    -fx-font-weight: 500;
+    -fx-text-alignment: center;
+}
+
+.splash-version {
+    -fx-font-size: 14px;
+    -fx-text-fill: #0A84FF;
+    -fx-font-weight: 600;
+    -fx-text-alignment: center;
+}
+
+.splash-loading-text {
+    -fx-font-size: 14px;
+    -fx-text-fill: #F2F2F7;
+    -fx-font-weight: 500;
+    -fx-text-alignment: center;
+}
+
+.splash-progress {
+    -fx-accent: #0A84FF;
+    -fx-background-color: #2A2A2B;
+    -fx-background-radius: 8px;
+    -fx-padding: 4px;
+}
+
+.splash-progress .bar {
+    -fx-background-color: linear-gradient(to right, #0A84FF, #5AC8FA);
+    -fx-background-radius: 6px;
+    -fx-padding: 2px;
+}
+
+.splash-footer {
+    -fx-font-size: 12px;
+    -fx-text-fill: #6E6E73;
+    -fx-font-weight: 500;
+    -fx-text-alignment: center;
+}
+
+.splash-footer-small {
+    -fx-font-size: 11px;
+    -fx-text-fill: #6E6E73;
+    -fx-font-weight: 400;
+}
+
+.splash-footer-brand {
+    -fx-font-size: 11px;
+    -fx-text-fill: #0A84FF;
+    -fx-font-weight: 600;
 }
 
 .empty-state-icon {
@@ -660,25 +732,57 @@
     -fx-spacing: 30px;
 }
 
+/* --- PROJECTS HEADER --- */
 .projects-header {
     -fx-alignment: center-left;
-    -fx-padding: 20px 0;
+    -fx-padding: 32px 0 24px 0;
+    -fx-background-color: transparent;
+}
+
+.header-title-section {
+    -fx-alignment: center-left;
+    -fx-spacing: 8px;
+    -fx-padding: 0 0 16px 0;
+}
+
+.header-stats-container {
+    -fx-background-color: #1A1A1B;
+    -fx-background-radius: 16px;
+    -fx-padding: 24px 32px;
+    -fx-border-color: #2A2A2B;
+    -fx-border-width: 1px;
+    -fx-border-radius: 16px;
+}
+
+.stats-row {
+    -fx-alignment: center-left;
+    -fx-spacing: 40px;
 }
 
 .header-stat-item {
     -fx-alignment: center-left;
+    -fx-spacing: 4px;
+    -fx-padding: 8px 0;
 }
 
 .stat-number {
-    -fx-font-size: 24px;
+    -fx-font-size: 28px;
     -fx-text-fill: #F2F2F7;
     -fx-font-weight: 700;
 }
 
 .stat-label {
-    -fx-font-size: 12px;
+    -fx-font-size: 13px;
     -fx-text-fill: #8E8E93;
-    -fx-font-weight: 500;
+    -fx-font-weight: 600;
+}
+
+.sort-controls-row {
+    -fx-alignment: center-left;
+    -fx-spacing: 16px;
+    -fx-padding: 16px 0 0 0;
+    -fx-border-color: #2A2A2B;
+    -fx-border-width: 1px 0 0 0;
 }
 
 /* ===================== */

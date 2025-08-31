@@ -340,19 +340,30 @@
 .splash-container {
     -fx-background-color: #0C0C0CFF;
     -fx-alignment: center;
-    -fx-spacing: 30px;
-    -fx-padding: 50px;
+    -fx-spacing: 40px;
+    -fx-padding: 60px;
+}
+
+.splash-app-icon {
+    -fx-effect: dropshadow(gaussian, rgba(10, 132, 255, 0.4), 15, 0, 0, 3);
+}
+
+.splash-info-section {
+    -fx-alignment: center;
+    -fx-spacing: 12px;
+    -fx-padding: 0 0 20 0;
 }
 
 .splash-title {
-    -fx-font-size: 36px;
+    -fx-font-size: 42px;
     -fx-text-fill: white;
     -fx-font-weight: 700;
     -fx-text-alignment: center;
+    -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.1), 2, 0, 0, 1);
 }
 
 .splash-subtitle {
-    -fx-font-size: 16px;
+    -fx-font-size: 18px;
     -fx-text-fill: #8E8E93;
     -fx-font-weight: 500;
     -fx-text-alignment: center;
@@ -365,8 +376,27 @@
     -fx-text-alignment: center;
 }
 
-.splash-loading-text {
+.splash-version-separator {
+    -fx-font-size: 12px;
+    -fx-text-fill: #3A3A3C;
+    -fx-font-weight: normal;
+}
+
+.splash-platform {
     -fx-font-size: 14px;
+    -fx-text-fill: #6E6E73;
+    -fx-font-weight: 500;
+    -fx-text-alignment: center;
+}
+
+.splash-loading-section {
+    -fx-alignment: center;
+    -fx-spacing: 16px;
+    -fx-padding: 20 0;
+}
+
+.splash-loading-text {
+    -fx-font-size: 16px;
     -fx-text-fill: #F2F2F7;
     -fx-font-weight: 500;
     -fx-text-alignment: center;
@@ -375,33 +405,64 @@
 .splash-progress {
     -fx-accent: #0A84FF;
     -fx-background-color: #2A2A2B;
-    -fx-background-radius: 8px;
-    -fx-padding: 4px;
+    -fx-background-radius: 10px;
+    -fx-padding: 6px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 4, 0, 0, 1);
 }
 
 .splash-progress .bar {
     -fx-background-color: linear-gradient(to right, #0A84FF, #5AC8FA);
-    -fx-background-radius: 6px;
-    -fx-padding: 2px;
+    -fx-background-radius: 8px;
+    -fx-padding: 3px;
 }
 
 .splash-footer {
-    -fx-font-size: 12px;
+    -fx-font-size: 13px;
     -fx-text-fill: #6E6E73;
     -fx-font-weight: 500;
     -fx-text-alignment: center;
 }
 
 .splash-footer-small {
-    -fx-font-size: 11px;
+    -fx-font-size: 12px;
     -fx-text-fill: #6E6E73;
     -fx-font-weight: 400;
 }
 
 .splash-footer-brand {
-    -fx-font-size: 11px;
-    -fx-text-fill: #0A84FF;
+    -fx-font-size: 12px;
+    -fx-text-fill: #FF6B6B;
     -fx-font-weight: 600;
+}
+
+/* --- PROJECTS LOADING STATE --- */
+.loading-container {
+    -fx-alignment: center;
+    -fx-spacing: 15px;
+    -fx-padding: 40px;
+}
+
+.projects-loading-spinner {
+    -fx-progress-color: #0A84FF;
+    -fx-background-color: transparent;
+}
+
+.projects-loading-spinner .percentage {
+    -fx-fill: transparent;
+}
+
+.loading-title {
+    -fx-font-size: 20px;
+    -fx-text-fill: #F2F2F7;
+    -fx-font-weight: 600;
+    -fx-text-alignment: center;
+}
+
+.loading-status {
+    -fx-font-size: 14px;
+    -fx-text-fill: #8E8E93;
+    -fx-font-weight: 500;
+    -fx-text-alignment: center;
 }
 
 .empty-state-icon {

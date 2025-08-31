@@ -7,38 +7,52 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.Region?>
 
-<VBox fx:id="splashRoot" styleClass="splash-container" alignment="CENTER" spacing="30" 
+<VBox fx:id="splashRoot" styleClass="splash-container" alignment="CENTER" spacing="40" 
       xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.kentom.devcleaner.SplashController">
     <padding>
-        <Insets bottom="50.0" left="50.0" right="50.0" top="50.0"/>
+        <Insets bottom="60.0" left="60.0" right="60.0" top="60.0"/>
     </padding>
 
-    <!-- App Logo/Icon -->
-    <ImageView fx:id="appIcon" fitHeight="120" fitWidth="120" preserveRatio="true">
-        <Image url="@icons/app-icon.png"/>
-    </ImageView>
+    <!-- Top Spacer -->
+    <Region prefHeight="20"/>
 
-    <!-- App Info -->
+    <!-- App Logo/Icon with shadow effect -->
     <VBox alignment="CENTER" spacing="8">
-        <Label styleClass="splash-title" text="DevCleaner"/>
-        <Label styleClass="splash-subtitle" text="Clean up your development projects"/>
-        <Label styleClass="splash-version" fx:id="versionLabel" text="v1.0"/>
+        <ImageView fx:id="appIcon" fitHeight="140" fitWidth="140" preserveRatio="true" styleClass="splash-app-icon">
+            <Image url="@icons/app-icon.png"/>
+        </ImageView>
     </VBox>
+
+    <!-- App Info Section -->
+    <VBox alignment="CENTER" spacing="12" styleClass="splash-info-section">
+        <Label styleClass="splash-title" text="DevCleaner"/>
+        <Label styleClass="splash-subtitle" text="Clean up your development projects with ease"/>
+        <HBox alignment="CENTER" spacing="8">
+            <Label styleClass="splash-version" fx:id="versionLabel" text="v1.0"/>
+            <Label styleClass="splash-version-separator" text="•"/>
+            <Label styleClass="splash-platform" text="JavaFX Edition"/>
+        </HBox>
+    </VBox>
+
+    <!-- Spacer to push loading section down -->
+    <Region VBox.vgrow="ALWAYS"/>
 
     <!-- Loading Section -->
-    <VBox alignment="CENTER" spacing="12">
-        <Label styleClass="splash-loading-text" fx:id="loadingLabel" text="Initializing..."/>
-        <ProgressBar fx:id="progressBar" styleClass="splash-progress" prefWidth="250" progress="0"/>
+    <VBox alignment="CENTER" spacing="16" styleClass="splash-loading-section">
+        <Label styleClass="splash-loading-text" fx:id="loadingLabel" text="Initializing application..."/>
+        <ProgressBar fx:id="progressBar" styleClass="splash-progress" prefWidth="320" progress="0"/>
     </VBox>
 
-    <!-- Footer -->
-    <VBox alignment="CENTER" spacing="4" style="-fx-padding: 20 0 0 0;">
-        <Label styleClass="splash-footer" text="Loading your projects..."/>
-        <HBox alignment="CENTER" spacing="4">
-            <Label styleClass="splash-footer-small" text="Powered by"/>
-            <Label styleClass="splash-footer-brand" text="JavaFX"/>
+    <!-- Footer Section -->
+    <VBox alignment="CENTER" spacing="8" style="-fx-padding: 30 0 0 0;">
+        <Label styleClass="splash-footer" text="Preparing your workspace..."/>
+        <HBox alignment="CENTER" spacing="6">
+            <Label styleClass="splash-footer-small" text="Built with"/>
+            <Label styleClass="splash-footer-brand" text="❤️"/>
+            <Label styleClass="splash-footer-small" text="using JavaFX"/>
         </HBox>
     </VBox>
 </VBox>

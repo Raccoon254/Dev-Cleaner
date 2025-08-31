@@ -60,7 +60,7 @@ public class DevCleanerApp extends Application {
             // Load main application
             FXMLLoader mainLoader = new FXMLLoader(DevCleanerApp.class.getResource("main-view.fxml"));
             Parent mainRoot = mainLoader.load();
-            Scene mainScene = new Scene(mainRoot, 1024, 768);
+            Scene mainScene = new Scene(mainRoot, 1380, 900);
             
             // Configure primary stage
             addAppIcons(primaryStage);
@@ -69,8 +69,8 @@ public class DevCleanerApp extends Application {
             primaryStage.setMinHeight(650);
             primaryStage.setScene(mainScene);
             
-            // Position main window at center of screen
-            primaryStage.centerOnScreen();
+            // Start maximized
+            //primaryStage.setMaximized(true);
             
             // Show main application and hide splash
             primaryStage.show();

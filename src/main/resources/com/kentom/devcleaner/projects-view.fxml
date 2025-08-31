@@ -12,6 +12,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.shape.SVGPath?>
 
+<?import javafx.scene.control.ProgressIndicator?>
 <StackPane fx:id="projectsRoot" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="com.kentom.devcleaner.ProjectsController">
     <VBox alignment="TOP_CENTER" spacing="20.0">
@@ -65,7 +66,7 @@
                                 <Button fx:id="sortDateBtn" onAction="#sortByDate" styleClass="sort-button" text="Date">
                                     <graphic>
                                         <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
-                                            <Image url="@icons/sort-by-time.png"/>
+                                            <Image url="@icons/clock-sort.png"/>
                                         </ImageView>
                                     </graphic>
                                 </Button>
@@ -86,6 +87,20 @@
             </VBox>
         </ScrollPane>
 
+        <!-- Loading State -->
+        <VBox fx:id="loadingStateBox" alignment="CENTER" spacing="20" VBox.vgrow="ALWAYS" visible="false">
+            <VBox alignment="CENTER" spacing="15" styleClass="loading-container">
+                <ImageView fitHeight="200" fitWidth="200" preserveRatio="true">
+                    <Image url="@icons/Insider-loading.gif"/>
+                </ImageView>
+                <VBox alignment="CENTER" spacing="8">
+                    <Label styleClass="loading-title" text="Loading Projects"/>
+                    <Label fx:id="loadingStatusLabel" styleClass="loading-status" text="Analyzing projects..."/>
+                </VBox>
+            </VBox>
+        </VBox>
+
+        <!-- Empty State -->
         <VBox fx:id="emptyStateBox" alignment="CENTER" spacing="15" VBox.vgrow="ALWAYS" visible="false">
             <SVGPath styleClass="empty-state-icon"
                      content="M13,9H18.5L13,3.5V9M6,2H14L20,8V20A2,2 0 0,1 18,22H6C4.89,22 4,21.1 4,20V4C4,2.89 4.89,2 6,2M11,15.5L9.5,14.25L7.25,16.5L9.5,18.75L11,17.5L9.75,16.5L11,15.5M16.75,16.5L14.5,18.75L13,17.5L14.25,16.5L13,15.5L14.5,14.25L16.75,16.5Z"/>

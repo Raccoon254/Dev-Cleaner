@@ -6,14 +6,12 @@ import com.kentom.devcleaner.model.Project;
 import com.kentom.devcleaner.model.ProjectCache;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
@@ -27,10 +25,13 @@ public class ProjectsController {
 
     @FXML private TilePane projectTilePane;
     @FXML private VBox emptyStateBox;
+    @FXML private VBox loadingStateBox;
     @FXML private VBox projectStatsBox;
     @FXML private Label totalProjectsLabel;
     @FXML private Label totalCleanableLabel;
     @FXML private Label projectTypesLabel;
+    @FXML private Label loadingStatusLabel;
+    @FXML private ProgressIndicator projectsLoadingIndicator;
     @FXML private Button sortNameBtn;
     @FXML private Button sortSizeBtn;
     @FXML private Button sortDateBtn;
@@ -62,7 +63,95 @@ public class ProjectsController {
     }
 
     public void refreshProjects() {
-        activeProjects = ProjectCache.loadProjects();
+        // Show loading state immediately
+        showLoadingState();
+        
+        // Load projects asynchronously
+        Task<List<Project>> loadProjectsTask = new Task<List<Project>>() {
+            @Override
+            protected List<Project> call() throws Exception {
+                // Update loading status
+                Platform.runLater(() -> loadingStatusLabel.setText("Loading cached projects..."));
+                
+                // Load projects from cache
+                List<Project> projects = ProjectCache.loadProjects();
+                
+                // If we have projects, perform lightweight analysis
+                if (!projects.isEmpty()) {
+                    int totalProjects = projects.size();
+                    
+                    // Process projects in batches for better responsiveness
+                    for (int i = 0; i < projects.size(); i += 5) {
+                        final int batchStart = i;
+                        final int batchEnd = Math.min(i + 5, projects.size());
+                        
+                        Platform.runLater(() -> 
+                            loadingStatusLabel.setText(String.format("Processing projects %d-%d of %d...", 
+                                batchStart + 1, batchEnd, totalProjects))
+                        );
+                        
+                        // Process batch of 5 projects
+                        for (int j = batchStart; j < batchEnd; j++) {
+                            Project project = projects.get(j);
+                            // Pre-load Git info in background (this will cache it)
+                            try {
+                                project.getGitInfo();
+                            } catch (Exception e) {
+                                // Ignore Git analysis errors for individual projects
+                            }
+                        }
+                        
+                        // Small delay between batches
+                        Thread.sleep(100);
+                    }
+                }
+                
+                return projects;
+            }
+        };
+        
+        loadProjectsTask.setOnSucceeded(e -> {
+            activeProjects = loadProjectsTask.getValue();
+            Platform.runLater(this::displayProjectsResults);
+        });
+        
+        loadProjectsTask.setOnFailed(e -> {
+            Platform.runLater(() -> {
+                hideLoadingState();
+                // Show error or empty state
+                activeProjects = new ArrayList<>();
+                displayProjectsResults();
+            });
+        });
+        
+        // Run the task in background thread
+        Thread loadingThread = new Thread(loadProjectsTask);
+        loadingThread.setDaemon(true);
+        loadingThread.start();
+    }
+    
+    private void showLoadingState() {
+        // Hide all other states
+        emptyStateBox.setVisible(false);
+        emptyStateBox.setManaged(false);
+        projectTilePane.setVisible(false);
+        projectTilePane.setManaged(false);
+        projectStatsBox.setVisible(false);
+        projectStatsBox.setManaged(false);
+        
+        // Show loading state
+        loadingStateBox.setVisible(true);
+        loadingStateBox.setManaged(true);
+    }
+    
+    private void hideLoadingState() {
+        loadingStateBox.setVisible(false);
+        loadingStateBox.setManaged(false);
+    }
+    
+    private void displayProjectsResults() {
+        hideLoadingState();
+        
         boolean projectsExist = !activeProjects.isEmpty();
 
         // When projects exist, the empty state is made invisible AND unmanaged,

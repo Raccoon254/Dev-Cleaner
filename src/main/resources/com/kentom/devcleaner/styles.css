@@ -643,3 +643,41 @@
     -fx-font-weight: 600;
     -fx-text-alignment: center;
 }
+
+/* --- RESET & COPY BUTTONS --- */
+.reset-button {
+    -fx-background-color: #FF3B30;
+    -fx-text-fill: white;
+    -fx-font-weight: 600;
+    -fx-font-size: 14px;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-border-color: transparent;
+    -fx-border-width: 2px;
+    -fx-padding: 8px 16px;
+    -fx-cursor: hand;
+    -fx-graphic-text-gap: 8px;
+}
+
+.reset-button:hover {
+    -fx-border-color: #FF453A;
+}
+
+.copy-path-button {
+    -fx-background-color: #0A84FF;
+    -fx-text-fill: white;
+    -fx-font-weight: 600;
+    -fx-font-size: 12px;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: transparent;
+    -fx-border-width: 2px;
+    -fx-padding: 6px 12px;
+    -fx-cursor: hand;
+    -fx-graphic-text-gap: 6px;
+}
+
+.copy-path-button:hover {
+    -fx-border-color: #0A84FF;
+    -fx-background-color: #007AFF;
+}

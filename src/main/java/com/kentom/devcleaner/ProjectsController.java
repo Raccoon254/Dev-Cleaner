@@ -55,6 +55,10 @@ public class ProjectsController {
         projectTilePane.setVisible(projectsExist);
         projectTilePane.setManaged(projectsExist);
 
+        // Show reset button only when projects exist
+        resetButton.setVisible(projectsExist);
+        resetButton.setManaged(projectsExist);
+
         populateGrid();
     }
 
@@ -142,6 +146,33 @@ public class ProjectsController {
         } catch (IOException e) {
             LogManager.log("Failed to load project details view: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleResetProjects() {
+        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmation.setTitle("Reset All Projects");
+        confirmation.getDialogPane().getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
+        confirmation.setHeaderText("Clear all projects from DevCleaner?");
+        confirmation.setContentText("This will remove all projects from the application's cache. It will not delete any files from your disk. Projects can be re-added by scanning again.");
+
+        Optional<ButtonType> result = confirmation.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            activeProjects.clear();
+            ProjectCache.saveProjects(new ArrayList<>());
+            LogManager.log("All projects cleared by user reset");
+            refreshProjects();
+            
+            // Show success message
+            Platform.runLater(() -> {
+                Alert success = new Alert(Alert.AlertType.INFORMATION);
+                success.setTitle("Reset Complete");
+                success.getDialogPane().getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
+                success.setHeaderText("All projects cleared");
+                success.setContentText("All projects have been removed from DevCleaner's cache.");
+                success.showAndWait();
+            });
         }
     }
 }

@@ -15,16 +15,23 @@ public class MainController {
     @FXML private BorderPane mainPane;
     @FXML private StackPane contentPane;
 
+    private Node dashboardView;
     private Node projectsView;
     private Node scanView;
     private Node settingsView;
 
+    private DashboardController dashboardController;
     private ProjectsController projectsController;
     private ScanController scanController;
 
     @FXML
     public void initialize() throws IOException {
         // Pre-load all the views
+        FXMLLoader dashboardLoader = new FXMLLoader(getClass().getResource("dashboard-view.fxml"));
+        dashboardView = dashboardLoader.load();
+        dashboardController = dashboardLoader.getController();
+        dashboardController.setMainController(this);
+
         FXMLLoader projectsLoader = new FXMLLoader(getClass().getResource("projects-view.fxml"));
         projectsView = projectsLoader.load();
         projectsController = projectsLoader.getController();
@@ -35,23 +42,29 @@ public class MainController {
         scanController = scanLoader.getController();
         scanController.setProjectsController(projectsController); // Give scan controller a reference to projects
 
-        // Set initial view
-        contentPane.getChildren().add(projectsView);
+        // Set initial view to dashboard
+        contentPane.getChildren().add(dashboardView);
     }
 
     @FXML
-    private void showProjects() {
+    private void showDashboard() {
+        switchView(dashboardView);
+        dashboardController.refreshDashboard(); // Refresh dashboard when switching to the view
+    }
+
+    @FXML
+    public void showProjects() {
         switchView(projectsView);
         projectsController.refreshProjects(); // Refresh projects when switching to the view
     }
 
     @FXML
-    private void showScan() {
+    public void showScan() {
         switchView(scanView);
     }
 
     @FXML
-    private void showSettings() {
+    public void showSettings() {
         try {
             if (settingsView == null) {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("settings-view.fxml"));

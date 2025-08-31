@@ -9,6 +9,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.VBox;
 
 import java.nio.file.Path;
@@ -115,6 +117,16 @@ public class ProjectDetailsController {
             alert.setContentText(message);
             alert.showAndWait();
         });
+    }
+
+    @FXML
+    private void handleCopyPath() {
+        Clipboard clipboard = Clipboard.getSystemClipboard();
+        ClipboardContent content = new ClipboardContent();
+        content.putString(project.getPath().toString());
+        clipboard.setContent(content);
+        
+        showAlert(Alert.AlertType.INFORMATION, "Path Copied", "Project path has been copied to clipboard.");
     }
 
     public void handleScanProject(ActionEvent actionEvent) {

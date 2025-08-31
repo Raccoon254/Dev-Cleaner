@@ -29,7 +29,14 @@
                 <Label styleClass="sidebar-title" text="DevCleaner"/>
             </VBox>
 
-            <!-- To change an icon, just replace the SVG code in the 'content' property -->
+            <Button onAction="#showDashboard" styleClass="nav-button" text="Dashboard">
+                <graphic>
+                    <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
+                        <Image url="@icons/dash.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
+
             <Button onAction="#showProjects" styleClass="nav-button" text="Projects">
                 <graphic>
                     <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">

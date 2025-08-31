@@ -4,44 +4,81 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.SVGPath?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.shape.Arc?>
 
 <StackPane fx:id="scanRoot" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="com.kentom.devcleaner.ScanController">
-    <padding>
-        <Insets bottom="30.0" left="30.0" right="30.0" top="30.0"/>
-    </padding>
 
     <!-- Initial Scan State -->
-    <VBox fx:id="scanBox" alignment="CENTER" spacing="25.0" maxWidth="600">
-        <Label styleClass="view-title" text="Scan for Projects"/>
-        <Label styleClass="view-subtitle" wrapText="true" textAlignment="CENTER"
-               text="Select a folder to scan. DevCleaner will search for projects and calculate cleanable space."/>
+    <ScrollPane fitToWidth="true" styleClass="scroll-pane">
+        <VBox fx:id="scanBox" alignment="CENTER" spacing="30.0" styleClass="scan-container">
+            <Label styleClass="view-title" text="Scan for Projects"/>
+            <Label styleClass="view-subtitle" wrapText="true" textAlignment="CENTER"
+                   text="Select a folder to scan. DevCleaner will search for projects and calculate cleanable space."/>
 
-        <HBox alignment="CENTER" spacing="10.0">
-            <TextField fx:id="directoryPathField" promptText="Enter directory path..." HBox.hgrow="ALWAYS"/>
-            <Button onAction="#handleBrowseAction" styleClass="button-outline" text="Browse..."/>
-        </HBox>
+            <VBox styleClass="scan-input-section" spacing="25" maxWidth="500" alignment="CENTER">
+                <HBox alignment="CENTER" spacing="12.0" styleClass="input-group">
+                    <ImageView fitHeight="18" fitWidth="18" preserveRatio="true">
+                        <Image url="@icons/folder.png"/>
+                    </ImageView>
+                    <TextField fx:id="directoryPathField" promptText="Enter directory path..." HBox.hgrow="ALWAYS"/>
+                    <Button onAction="#handleBrowseAction" styleClass="button-outline" text="Browse"/>
+                </HBox>
 
-        <Button fx:id="scanButton" onAction="#handleScanAction" styleClass="scan-button" text="Scan Now">
-            <graphic>
-                <SVGPath content="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"/>
-            </graphic>
-        </Button>
-    </VBox>
+                <Button fx:id="scanButton" onAction="#handleScanAction" styleClass="scan-button" text="Start Scanning">
+                    <graphic>
+                        <ImageView fitHeight="18" fitWidth="18" preserveRatio="true">
+                            <Image url="@icons/scan.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </VBox>
+
+            <!-- Tips Section -->
+            <VBox styleClass="scan-tips-section" spacing="15" maxWidth="600" alignment="CENTER">
+                <Label styleClass="tips-title" text="Scanning Tips"/>
+                <VBox spacing="12" alignment="CENTER_LEFT">
+                    <HBox spacing="12" alignment="CENTER_LEFT">
+                        <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
+                            <Image url="@icons/info.png"/>
+                        </ImageView>
+                        <Label styleClass="tip-text" text="Scan common development directories like ~/Projects or ~/Documents"/>
+                    </HBox>
+                    <HBox spacing="12" alignment="CENTER_LEFT">
+                        <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
+                            <Image url="@icons/info.png"/>
+                        </ImageView>
+                        <Label styleClass="tip-text" text="Larger directories may take several minutes to scan"/>
+                    </HBox>
+                    <HBox spacing="12" alignment="CENTER_LEFT">
+                        <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
+                            <Image url="@icons/info.png"/>
+                        </ImageView>
+                        <Label styleClass="tip-text" text="DevCleaner detects Node.js, Rust, Go, and other project types"/>
+                    </HBox>
+                </VBox>
+            </VBox>
+        </VBox>
+    </ScrollPane>
 
     <!-- Scanning In Progress State -->
-    <VBox fx:id="scanningBox" alignment="CENTER" spacing="20.0" visible="false">
-        <StackPane fx:id="loadingAnimation" styleClass="loader">
-            <Arc type="OPEN" startAngle="0" length="120" styleClass="loader-arc" />
-            <Arc type="OPEN" startAngle="150" length="120" styleClass="loader-arc" />
-        </StackPane>
-        <Label styleClass="scan-status-title" text="Scanning in Progress..."/>
-        <Label fx:id="scanStatusLabel" styleClass="scan-status-text" text="Initializing..."/>
+    <VBox fx:id="scanningBox" alignment="CENTER" spacing="25.0" visible="false" styleClass="scanning-overlay">
+        <VBox styleClass="scanning-card" spacing="25" alignment="CENTER">
+            <StackPane fx:id="loadingAnimation" styleClass="loader">
+                <Arc type="OPEN" startAngle="0" length="120" styleClass="loader-arc" />
+                <Arc type="OPEN" startAngle="150" length="120" styleClass="loader-arc" />
+            </StackPane>
+            <VBox alignment="CENTER" spacing="10">
+                <Label styleClass="scan-status-title" text="Scanning in Progress"/>
+                <Label fx:id="scanStatusLabel" styleClass="scan-status-text" text="Initializing..."/>
+            </VBox>
+        </VBox>
     </VBox>
 
 </StackPane>

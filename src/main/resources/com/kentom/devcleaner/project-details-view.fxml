@@ -21,9 +21,18 @@
 
     <HBox spacing="20" alignment="CENTER_LEFT" style="-fx-padding: 20 0 10 0;">
         <ImageView fx:id="projectIcon" fitHeight="64" fitWidth="64" preserveRatio="true"/>
-        <VBox>
+        <VBox spacing="5" HBox.hgrow="ALWAYS">
             <Label fx:id="projectNameLabel" styleClass="details-title" wrapText="true"/>
-            <Label fx:id="projectPathLabel" styleClass="details-path" wrapText="true"/>
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label fx:id="projectPathLabel" styleClass="details-path" wrapText="true" HBox.hgrow="ALWAYS"/>
+                <Button onAction="#handleCopyPath" styleClass="copy-path-button" text="Copy Path">
+                    <graphic>
+                        <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
+                            <Image url="@icons/copy.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </HBox>
         </VBox>
     </HBox>
 

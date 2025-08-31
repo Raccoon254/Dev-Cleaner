@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<StackPane fx:id="dashboardRoot" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.kentom.devcleaner.DashboardController">
+    <VBox spacing="20.0">
+        <ScrollPane fitToWidth="true" styleClass="scroll-pane" VBox.vgrow="ALWAYS">
+            <VBox styleClass="dashboard-container">
+                <Label styleClass="view-title" text="Dashboard"/>
+                
+                <!-- Stats Cards -->
+                <HBox spacing="20" style="-fx-padding: 0 20; -fx-alignment: left;">
+                    <!-- Project Count Card -->
+                    <VBox styleClass="stats-card" spacing="10" HBox.hgrow="ALWAYS" alignment="TOP_LEFT">
+                        <HBox spacing="10">
+                            <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
+                                <Image url="@icons/box.png"/>
+                            </ImageView>
+                            <Label styleClass="stats-title" text="Total Projects"/>
+                        </HBox>
+                        <Label fx:id="projectCountLabel" styleClass="stats-value" text="0"/>
+                    </VBox>
+                    
+                    <!-- Disk Usage Card -->
+                    <VBox styleClass="stats-card" spacing="10" HBox.hgrow="ALWAYS">
+                        <HBox spacing="10">
+                            <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
+                                <Image url="@icons/disk.png"/>
+                            </ImageView>
+                            <Label styleClass="stats-title" text="Total Disk Usage"/>
+                        </HBox>
+                        <Label fx:id="diskUsageLabel" styleClass="stats-value" text="N/A"/>
+                    </VBox>
+                    
+                    <!-- Cleanable Space Card -->
+                    <VBox styleClass="stats-card" spacing="10" HBox.hgrow="ALWAYS">
+                        <HBox spacing="10">
+                            <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
+                                <Image url="@icons/trash.png"/>
+                            </ImageView>
+                            <Label styleClass="stats-title" text="Cleanable Space"/>
+                        </HBox>
+                        <Label fx:id="cleanableSpaceLabel" styleClass="stats-value" text="0 GB"/>
+                    </VBox>
+                </HBox>
+                
+                <!-- Recent Activity -->
+                <VBox styleClass="dashboard-section" spacing="20">
+                    <Label styleClass="section-title" text="Recent Activity"/>
+                    <VBox fx:id="recentActivityBox" styleClass="activity-container" spacing="8"/>
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </VBox>
+</StackPane>

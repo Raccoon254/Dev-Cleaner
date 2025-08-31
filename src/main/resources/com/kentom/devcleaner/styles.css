@@ -133,7 +133,10 @@
 /* --- SCAN VIEW --- */
 .scan-container {
     -fx-background-color: #0C0C0CFF;
-    -fx-padding: 40px;
+    -fx-border-radius: 12px;
+    -fx-background-radius: 12px;
+    -fx-alignment: center;
+    -fx-spacing: 30px;
 }
 
 .scan-input-section {
@@ -141,9 +144,14 @@
     -fx-background-radius: 18px;
     -fx-border-radius: 18px;
     -fx-border-color: transparent;
-    -fx-border-width: 1px;
+    -fx-border-width: 2px;
     -fx-padding: 30px;
     -fx-alignment: center;
+    -fx-max-width: 500px;
+}
+
+.scan-input-section:hover {
+    -fx-border-color: #0A84FF;
 }
 
 .input-group {
@@ -153,10 +161,9 @@
     -fx-padding: 4px 15px;
 }
 
-
 .scan-button {
-    -fx-pref-height: 60px;
-    -fx-pref-width: 300px;
+    -fx-pref-height: 50px;
+    -fx-pref-width: 280px;
     -fx-background-radius: 12px;
     -fx-border-radius: 12px;
     -fx-border-color: transparent;
@@ -165,7 +172,7 @@
     -fx-text-fill: white;
     -fx-font-size: 16px;
     -fx-font-weight: 600;
-    -fx-graphic-text-gap: 12;
+    -fx-graphic-text-gap: 10;
     -fx-content-display: left;
     -fx-alignment: center;
 }
@@ -174,19 +181,19 @@
     -fx-border-color: #32D15A;
 }
 
-.scan-button:pressed {
-    -fx-scale-x: 0.97;
-    -fx-scale-y: 0.97;
-}
-
 .scan-tips-section {
     -fx-background-color: #171718;
     -fx-background-radius: 18px;
     -fx-border-radius: 18px;
     -fx-border-color: transparent;
-    -fx-border-width: 1px;
+    -fx-border-width: 2px;
     -fx-padding: 25px;
     -fx-alignment: center;
+    -fx-max-width: 600px;
+}
+
+.scan-tips-section:hover {
+    -fx-border-color: #8E8E93;
 }
 
 .tips-title {
@@ -205,14 +212,17 @@
 .scanning-overlay {
     -fx-background-color: rgba(12, 12, 12, 0.95);
     -fx-backdrop-filter: blur(20px);
+    -fx-padding: 0 20px;
 }
 
 .scanning-card {
     -fx-background-color: #171718;
-    -fx-background-radius: 24px;
+    -fx-background-radius: 18px;
+    -fx-border-radius: 18px;
+    -fx-border-color: #0A84FF;
+    -fx-border-width: 2px;
     -fx-padding: 40px;
     -fx-alignment: center;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 30, 0, 0, 10);
     -fx-min-width: 300px;
 }
 

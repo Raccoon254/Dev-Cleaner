@@ -11,6 +11,14 @@ import java.util.stream.Stream;
 
 public class DirectoryScanner {
     private static final Set<String> CLEANUP_RULES;
+    
+    // Directories that should be excluded from project detection (build/generated directories)
+    private static final Set<String> EXCLUDED_DIRECTORIES = Set.of(
+        ".next", "obj", "bin", "target", "build", "dist", "out",
+        "Debug", "Release", "x64", "x86", "classes", "generated",
+        ".gradle", ".idea", ".vscode", ".vs", "node_modules",
+        "__pycache__", ".git", ".svn", ".hg"
+    );
 
     static {
         // Load cleanup rules from a configuration file.
@@ -36,9 +44,12 @@ public class DirectoryScanner {
         Files.walkFileTree(rootDirectory, new SimpleFileVisitor<>() {
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
-                // **FIX:** The stream of directory entries is now collected into a Set first.
-                // This allows us to check for markers for multiple project types without
-                // violating the rule that a stream can only be operated on once.
+                // Skip excluded directories (build/generated directories)
+                if (shouldSkipDirectory(dir)) {
+                    LogManager.log("Skipping excluded directory: " + dir);
+                    return FileVisitResult.SKIP_SUBTREE;
+                }
+
                 try {
                     Set<String> fileNames;
                     try (Stream<Path> entries = Files.list(dir)) {
@@ -46,19 +57,26 @@ public class DirectoryScanner {
                                 .collect(Collectors.toSet());
                     }
 
-                    // Now, iterate over project types and check against the collected Set.
+                    // Check for project types, prioritizing certain types
+                    ProjectType detectedType = null;
+                    
+                    // First check for more specific project types
                     for (ProjectType type : ProjectType.values()) {
-                        // Check if any marker for the current project type exists in the directory.
                         boolean isProject = type.markers.stream().anyMatch(fileNames::contains);
-
                         if (isProject) {
-                            LogManager.log("Detected " + type.displayName + " project at: " + dir);
-                            Project project = new Project(dir, type);
-                            findCleanableItems(project);
-                            projects.add(project);
-                            // Skip scanning subdirectories of a detected project.
-                            return FileVisitResult.SKIP_SUBTREE;
+                            detectedType = type;
+                            break;
                         }
+                    }
+
+                    if (detectedType != null) {
+                        LogManager.log("Detected " + detectedType.displayName + " project at: " + dir);
+                        Project project = new Project(dir, detectedType);
+                        findCleanableItems(project);
+                        calculateTotalProjectSize(project);
+                        projects.add(project);
+                        // Skip scanning subdirectories of a detected project.
+                        return FileVisitResult.SKIP_SUBTREE;
                     }
                 } catch (AccessDeniedException e) {
                     LogManager.log("Access Denied, skipping directory: " + dir);
@@ -128,6 +146,42 @@ public class DirectoryScanner {
             });
         } catch (IOException e) {
             LogManager.log("Error scanning for cleanable items in project " + project.getName() + ": " + e.getMessage());
+        }
+    }
+
+    /**
+     * Determines if a directory should be skipped during project detection.
+     */
+    private boolean shouldSkipDirectory(Path dir) {
+        String dirName = dir.getFileName().toString();
+        
+        // Skip if the directory name itself is excluded
+        if (EXCLUDED_DIRECTORIES.contains(dirName)) {
+            return true;
+        }
+        
+        // Skip if we're inside a build/generated directory (check if path contains these directories)
+        String pathString = dir.toString().toLowerCase();
+        for (String excluded : EXCLUDED_DIRECTORIES) {
+            if (pathString.contains("/" + excluded.toLowerCase() + "/") || 
+                pathString.contains("\\" + excluded.toLowerCase() + "\\")) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    /**
+     * Calculates the total size of a project directory (excluding cleanable items to avoid double counting).
+     */
+    private void calculateTotalProjectSize(Project project) {
+        try {
+            long totalSize = calculateDirectorySize(project.getPath());
+            project.setTotalSize(totalSize);
+            LogManager.log("Calculated total size for " + project.getName() + ": " + totalSize + " bytes");
+        } catch (IOException e) {
+            LogManager.log("Could not calculate total size for project " + project.getName() + ": " + e.getMessage());
         }
     }
 

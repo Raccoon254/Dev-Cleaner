@@ -22,7 +22,7 @@
                     <Button fx:id="resetButton" onAction="#handleResetProjects" styleClass="reset-button" text="Reset All" visible="false">
                         <graphic>
                             <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
-                                <Image url="@icons/reset.png"/>
+                                <Image url="@icons/danger.png"/>
                             </ImageView>
                         </graphic>
                     </Button>

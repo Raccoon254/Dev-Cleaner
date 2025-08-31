@@ -20,6 +20,7 @@ public class Project implements Serializable {
     private final LocalDateTime dateCreated;
     private final List<String> cleanableItemsPaths = new ArrayList<>();
     private long sizeOfCleanableItems = 0;
+    private long totalSize = 0;
 
     private transient Image icon;
 
@@ -36,6 +37,7 @@ public class Project implements Serializable {
     public ProjectType getType() { return type; }
     public LocalDateTime getDateCreated() { return dateCreated; }
     public long getSizeOfCleanableItems() { return sizeOfCleanableItems; }
+    public long getTotalSize() { return totalSize; }
 
     public Image getIcon() {
         if (icon == null) {
@@ -55,6 +57,10 @@ public class Project implements Serializable {
     public void addCleanableItem(Path item, long size) {
         this.cleanableItemsPaths.add(item.toAbsolutePath().toString());
         this.sizeOfCleanableItems += size;
+    }
+
+    public void setTotalSize(long totalSize) {
+        this.totalSize = totalSize;
     }
 
     private void loadIcon() {

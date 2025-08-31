@@ -43,16 +43,18 @@ public class DashboardController {
         // Update project count
         projectCountLabel.setText(String.valueOf(projects.size()));
         
-        // Calculate cleanable space (only cleanable size is available in the model)
+        // Calculate total disk usage and cleanable space
+        long totalSize = 0;
         long cleanableSize = 0;
         
         for (Project project : projects) {
+            totalSize += project.getTotalSize();
             cleanableSize += project.getSizeOfCleanableItems();
         }
         
         // Format sizes in GB
         DecimalFormat df = new DecimalFormat("#.##");
-        diskUsageLabel.setText("N/A"); // Total project size not available
+        diskUsageLabel.setText(df.format(totalSize / (1024.0 * 1024.0 * 1024.0)) + " GB");
         cleanableSpaceLabel.setText(df.format(cleanableSize / (1024.0 * 1024.0 * 1024.0)) + " GB");
     }
 

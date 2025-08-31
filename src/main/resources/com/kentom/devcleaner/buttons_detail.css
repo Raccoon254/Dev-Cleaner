@@ -36,3 +36,9 @@
     -fx-border-color: #d32f2f;
     -fx-border-width: 1px;
 }
+
+.browse-button {
+    -fx-background-color: #1e1d1d;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}

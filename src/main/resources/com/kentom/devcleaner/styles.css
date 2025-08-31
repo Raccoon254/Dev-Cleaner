@@ -147,11 +147,10 @@
     -fx-border-width: 2px;
     -fx-padding: 30px;
     -fx-alignment: center;
-    -fx-max-width: 500px;
 }
 
 .scan-input-section:hover {
-    -fx-border-color: #0A84FF;
+    -fx-effect: dropshadow(gaussian, rgb(10, 132, 255), 2, 0, 0, 0);
 }
 
 .input-group {
@@ -168,17 +167,17 @@
     -fx-border-radius: 12px;
     -fx-border-color: transparent;
     -fx-border-width: 2px;
-    -fx-background-color: #30D158;
     -fx-text-fill: white;
     -fx-font-size: 16px;
     -fx-font-weight: 600;
     -fx-graphic-text-gap: 10;
     -fx-content-display: left;
-    -fx-alignment: center;
+    -fx-alignment: left;
+    -fx-effect: dropshadow(gaussian, white, 2, 0, 0, 0);
 }
 
 .scan-button:hover {
-    -fx-border-color: #32D15A;
+    -fx-effect: dropshadow(gaussian, rgb(50, 209, 90), 2, 0, 0, 0);
 }
 
 .scan-tips-section {
@@ -189,11 +188,10 @@
     -fx-border-width: 2px;
     -fx-padding: 25px;
     -fx-alignment: center;
-    -fx-max-width: 600px;
 }
 
 .scan-tips-section:hover {
-    -fx-border-color: #8E8E93;
+    -fx-effect: dropshadow(gaussian, #8E8E93, 2, 0, 0, 0);
 }
 
 .tips-title {

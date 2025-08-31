@@ -16,18 +16,31 @@
            fx:controller="com.kentom.devcleaner.ProjectsController">
     <VBox alignment="TOP_CENTER" spacing="20.0">
         <ScrollPane fitToWidth="true" styleClass="scroll-pane" VBox.vgrow="ALWAYS">
-            <VBox styleClass="projects-container">
-                <HBox alignment="CENTER" spacing="20" style="-fx-padding: 0 20;">
-                    <Label styleClass="view-title" text="Projects" HBox.hgrow="ALWAYS"/>
-                    <Button fx:id="resetButton" onAction="#handleResetProjects" styleClass="reset-button" text="Reset All" visible="false">
-                        <graphic>
-                            <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
-                                <Image url="@icons/danger.png"/>
-                            </ImageView>
-                        </graphic>
-                    </Button>
-                </HBox>
-                <TilePane style="-fx-padding: 20px" fx:id="projectTilePane" hgap="20" vgap="20"/>
+            <VBox styleClass="projects-container" style="-fx-padding: 0 20;">
+                <!-- Projects Header -->
+                <VBox styleClass="projects-header" spacing="15">
+                    <Label styleClass="view-title" text="Projects"/>
+                    <Label styleClass="view-subtitle" wrapText="true"
+                           text="Manage your development projects. Click any project to view details and clean up generated files."/>
+                    
+                    <!-- Project Stats -->
+                    <HBox fx:id="projectStatsBox" spacing="20" alignment="CENTER_LEFT" visible="false">
+                        <VBox styleClass="header-stat-item" spacing="5">
+                            <Label styleClass="stat-number" fx:id="totalProjectsLabel" text="0"/>
+                            <Label styleClass="stat-label" text="Projects"/>
+                        </VBox>
+                        <VBox styleClass="header-stat-item" spacing="5">
+                            <Label styleClass="stat-number" fx:id="totalCleanableLabel" text="0 GB"/>
+                            <Label styleClass="stat-label" text="Cleanable"/>
+                        </VBox>
+                        <VBox styleClass="header-stat-item" spacing="5">
+                            <Label styleClass="stat-number" fx:id="projectTypesLabel" text="0"/>
+                            <Label styleClass="stat-label" text="Types"/>
+                        </VBox>
+                    </HBox>
+                </VBox>
+                
+                <TilePane style="-fx-padding: 20px 0" fx:id="projectTilePane" hgap="20" vgap="20"/>
             </VBox>
         </ScrollPane>
 

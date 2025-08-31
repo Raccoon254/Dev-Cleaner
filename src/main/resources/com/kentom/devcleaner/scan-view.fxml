@@ -70,10 +70,9 @@
     <!-- Scanning In Progress State -->
     <VBox fx:id="scanningBox" alignment="CENTER" spacing="25.0" visible="false" styleClass="scanning-overlay">
         <VBox styleClass="scanning-card" spacing="25" alignment="CENTER">
-            <StackPane fx:id="loadingAnimation" styleClass="loader">
-                <Arc type="OPEN" startAngle="0" length="120" styleClass="loader-arc" />
-                <Arc type="OPEN" startAngle="150" length="120" styleClass="loader-arc" />
-            </StackPane>
+            <ImageView fitHeight="100" fitWidth="100" preserveRatio="true">
+                <Image url="@icons/Insider-loading.gif"/>
+            </ImageView>
             <VBox alignment="CENTER" spacing="10">
                 <Label styleClass="scan-status-title" text="Scanning in Progress"/>
                 <Label fx:id="scanStatusLabel" styleClass="scan-status-text" text="Initializing..."/>

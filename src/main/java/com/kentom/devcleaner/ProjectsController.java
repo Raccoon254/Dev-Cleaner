@@ -14,6 +14,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
@@ -27,7 +28,10 @@ public class ProjectsController {
 
     @FXML private TilePane projectTilePane;
     @FXML private VBox emptyStateBox;
-    @FXML private Button resetButton;
+    @FXML private HBox projectStatsBox;
+    @FXML private Label totalProjectsLabel;
+    @FXML private Label totalCleanableLabel;
+    @FXML private Label projectTypesLabel;
 
 
     private MainController mainController;
@@ -55,10 +59,11 @@ public class ProjectsController {
         projectTilePane.setVisible(projectsExist);
         projectTilePane.setManaged(projectsExist);
 
-        // Show reset button only when projects exist
-        resetButton.setVisible(projectsExist);
-        resetButton.setManaged(projectsExist);
+        // Show project stats only when projects exist
+        projectStatsBox.setVisible(projectsExist);
+        projectStatsBox.setManaged(projectsExist);
 
+        updateHeaderStats();
         populateGrid();
     }
 
@@ -149,30 +154,29 @@ public class ProjectsController {
         }
     }
 
-    @FXML
-    private void handleResetProjects() {
-        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmation.setTitle("Reset All Projects");
-        confirmation.getDialogPane().getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
-        confirmation.setHeaderText("Clear all projects from DevCleaner?");
-        confirmation.setContentText("This will remove all projects from the application's cache. It will not delete any files from your disk. Projects can be re-added by scanning again.");
-
-        Optional<ButtonType> result = confirmation.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            activeProjects.clear();
-            ProjectCache.saveProjects(new ArrayList<>());
-            LogManager.log("All projects cleared by user reset");
-            refreshProjects();
-            
-            // Show success message
-            Platform.runLater(() -> {
-                Alert success = new Alert(Alert.AlertType.INFORMATION);
-                success.setTitle("Reset Complete");
-                success.getDialogPane().getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
-                success.setHeaderText("All projects cleared");
-                success.setContentText("All projects have been removed from DevCleaner's cache.");
-                success.showAndWait();
-            });
+    private void updateHeaderStats() {
+        if (activeProjects == null || activeProjects.isEmpty()) {
+            return;
         }
+        
+        // Calculate total projects
+        totalProjectsLabel.setText(String.valueOf(activeProjects.size()));
+        
+        // Calculate total cleanable size
+        long totalCleanable = activeProjects.stream()
+                .mapToLong(Project::getSizeOfCleanableItems)
+                .sum();
+        
+        // Format size in GB
+        double cleanableGB = totalCleanable / (1024.0 * 1024.0 * 1024.0);
+        totalCleanableLabel.setText(String.format("%.1f GB", cleanableGB));
+        
+        // Calculate unique project types
+        long uniqueTypes = activeProjects.stream()
+                .map(Project::getType)
+                .distinct()
+                .count();
+        
+        projectTypesLabel.setText(String.valueOf(uniqueTypes));
     }
 }

@@ -3,16 +3,42 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 
-<VBox alignment="TOP_LEFT" spacing="20.0" xmlns="http://javafx.com/javafx/17"
-      xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kentom.devcleaner.SettingsController">
-    <padding>
-        <Insets bottom="30.0" left="30.0" right="30.0" top="30.0"/>
-    </padding>
-    <Label styleClass="view-title" text="Application Settings"/>
-    <VBox spacing="10" styleClass="settings-card">
-        <Label styleClass="settings-title" text="Scanning"/>
-        <CheckBox fx:id="autoScanCheckbox" onAction="#handleAutoScanToggle" text="Automatically scan for projects on startup"/>
+<ScrollPane fitToWidth="true" styleClass="scroll-pane" xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kentom.devcleaner.SettingsController">
+    <VBox styleClass="settings-container" style="-fx-padding: 0 20;" spacing="30">
+        <Label styleClass="view-title" text="Settings"/>
+        <Label styleClass="view-subtitle" wrapText="true"
+               text="Configure DevCleaner preferences and manage your application data."/>
+        
+        <!-- Scanning Settings -->
+        <VBox spacing="15" styleClass="settings-card">
+            <Label styleClass="settings-title" text="Scanning"/>
+            <CheckBox fx:id="autoScanCheckbox" onAction="#handleAutoScanToggle" 
+                      text="Automatically scan for projects on startup"/>
+        </VBox>
+        
+        <!-- Data Management -->
+        <VBox spacing="15" styleClass="settings-card">
+            <Label styleClass="settings-title" text="Data Management"/>
+            <Label styleClass="settings-description" wrapText="true"
+                   text="Reset all cached project data. This will remove all projects from DevCleaner but won't delete any files from your disk."/>
+            
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <Button fx:id="resetButton" onAction="#handleResetProjects" styleClass="reset-button" text="Reset All Projects">
+                    <graphic>
+                        <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
+                            <Image url="@icons/danger-blue.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </HBox>
+        </VBox>
     </VBox>
-</VBox>
+</ScrollPane>

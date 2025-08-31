@@ -1,21 +1,29 @@
 package com.kentom.devcleaner;
 
+import com.kentom.devcleaner.model.CleanableItem;
 import com.kentom.devcleaner.model.CleanupTask;
+import com.kentom.devcleaner.model.GitInfo;
 import com.kentom.devcleaner.model.LogManager;
 import com.kentom.devcleaner.model.Project;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ProjectDetailsController {
@@ -25,9 +33,11 @@ public class ProjectDetailsController {
     @FXML private Label projectPathLabel;
     @FXML private Label projectDateLabel;
     @FXML private Label projectSizeLabel;
+    @FXML private Label itemCountLabel;
     @FXML private ImageView projectIcon;
-    @FXML private ListView<String> cleanableFilesListView;
     @FXML private Button cleanButton;
+    @FXML private HBox projectActionsBox;
+    @FXML private VBox cleanableItemsContainer;
 
     private Project project;
     private ProjectsController projectController;
@@ -49,14 +59,188 @@ public class ProjectDetailsController {
         projectDateLabel.setText("Cached on: " + project.getDateCreated().format(formatter));
         projectSizeLabel.setText(String.format("Cleanable Size: %s", formatSize(project.getSizeOfCleanableItems())));
 
-        cleanableFilesListView.setItems(FXCollections.observableArrayList(
-                project.getCleanableItems().stream()
-                        .map(Path::getFileName)
-                        .map(Path::toString)
-                        .collect(Collectors.toList())
-        ));
+        // Setup project actions
+        setupProjectActions();
+        
+        // Setup enhanced cleanable items view
+        setupCleanableItemsView();
 
         cleanButton.setDisable(project.getCleanableItems().isEmpty());
+    }
+
+    private void setupProjectActions() {
+        projectActionsBox.getChildren().clear();
+        
+        // Add project type-specific actions
+        switch (project.getType()) {
+            case NODE:
+                addActionButton("npm install", "node.png", "action-button-success", this::runNpmInstall);
+                addActionButton("npm audit", "security.png", "action-button-warning", this::runNpmAudit);
+                break;
+            case MAVEN:
+                addActionButton("mvn clean", "maven.png", "project-action-button", this::runMavenClean);
+                addActionButton("mvn install", "maven.png", "action-button-success", this::runMavenInstall);
+                break;
+            case GRADLE:
+                addActionButton("gradle clean", "gradle.png", "project-action-button", this::runGradleClean);
+                addActionButton("gradle build", "gradle.png", "action-button-success", this::runGradleBuild);
+                break;
+            case PYTHON:
+                addActionButton("pip install", "python.png", "action-button-success", this::runPipInstall);
+                break;
+        }
+        
+        // Always add open in terminal
+        addActionButton("Open Terminal", "terminal.png", "project-action-button", this::openTerminal);
+    }
+
+    private void addActionButton(String text, String iconName, String styleClass, Runnable action) {
+        Button button = new Button(text);
+        button.getStyleClass().addAll("project-action-button", styleClass);
+        
+        try {
+            ImageView icon = new ImageView(new Image(getClass().getResourceAsStream("/com/kentom/devcleaner/icons/" + iconName)));
+            icon.setFitHeight(16);
+            icon.setFitWidth(16);
+            icon.setPreserveRatio(true);
+            button.setGraphic(icon);
+        } catch (Exception e) {
+            // Icon not found, continue without icon
+        }
+        
+        button.setOnAction(e -> action.run());
+        projectActionsBox.getChildren().add(button);
+    }
+
+    private void setupCleanableItemsView() {
+        cleanableItemsContainer.getChildren().clear();
+        
+        List<CleanableItem> items = createCleanableItems();
+        Map<String, List<CleanableItem>> groupedItems = groupDuplicateItems(items);
+        
+        itemCountLabel.setText(String.format("(%d items, %s total)", 
+            groupedItems.size(), formatSize(project.getSizeOfCleanableItems())));
+        
+        for (List<CleanableItem> itemGroup : groupedItems.values()) {
+            VBox itemCard = createItemCard(itemGroup);
+            cleanableItemsContainer.getChildren().add(itemCard);
+        }
+    }
+
+    private List<CleanableItem> createCleanableItems() {
+        return project.getCleanableItems().stream()
+                .map(path -> {
+                    try {
+                        long size = Files.isDirectory(path) ? calculateDirectorySize(path) : Files.size(path);
+                        return new CleanableItem(path, size);
+                    } catch (IOException e) {
+                        return new CleanableItem(path, 0);
+                    }
+                })
+                .collect(Collectors.toList());
+    }
+
+    private Map<String, List<CleanableItem>> groupDuplicateItems(List<CleanableItem> items) {
+        return items.stream()
+                .collect(Collectors.groupingBy(CleanableItem::getName));
+    }
+
+    private VBox createItemCard(List<CleanableItem> itemGroup) {
+        VBox card = new VBox(8);
+        card.getStyleClass().add("cleanable-item");
+        
+        CleanableItem primary = itemGroup.get(0);
+        
+        // Main info row
+        HBox mainInfo = new HBox(12);
+        mainInfo.setAlignment(Pos.CENTER_LEFT);
+        mainInfo.getStyleClass().add("item-main-info");
+        
+        // Icon
+        ImageView icon = createItemIcon(primary);
+        mainInfo.getChildren().add(icon);
+        
+        // Name and size
+        VBox textInfo = new VBox(2);
+        Label nameLabel = new Label(primary.getName());
+        nameLabel.getStyleClass().add("item-name");
+        
+        long totalSize = itemGroup.stream().mapToLong(CleanableItem::getSize).sum();
+        Label sizeLabel = new Label(formatSize(totalSize));
+        sizeLabel.getStyleClass().add("item-size");
+        
+        textInfo.getChildren().addAll(nameLabel, sizeLabel);
+        HBox.setHgrow(textInfo, Priority.ALWAYS);
+        mainInfo.getChildren().add(textInfo);
+        
+        // Stack indicator if duplicates
+        if (itemGroup.size() > 1) {
+            Label stackLabel = new Label(String.valueOf(itemGroup.size()));
+            stackLabel.getStyleClass().add("stack-indicator");
+            mainInfo.getChildren().add(stackLabel);
+        }
+        
+        card.getChildren().add(mainInfo);
+        
+        // Path info
+        if (itemGroup.size() == 1) {
+            Label pathLabel = new Label(primary.getPath().toString());
+            pathLabel.getStyleClass().add("item-path");
+            card.getChildren().add(pathLabel);
+        } else {
+            // Show all paths for duplicates
+            VBox pathsBox = new VBox(2);
+            for (CleanableItem item : itemGroup) {
+                Label pathLabel = new Label(item.getPath().toString());
+                pathLabel.getStyleClass().add("item-path");
+                pathsBox.getChildren().add(pathLabel);
+            }
+            card.getChildren().add(pathsBox);
+        }
+        
+        return card;
+    }
+
+    private ImageView createItemIcon(CleanableItem item) {
+        ImageView icon = new ImageView();
+        icon.setFitHeight(24);
+        icon.setFitWidth(24);
+        icon.setPreserveRatio(true);
+        icon.getStyleClass().add("item-icon");
+        
+        try {
+            String iconPath = "/com/kentom/devcleaner/icons/" + item.getType().iconName;
+            icon.setImage(new Image(getClass().getResourceAsStream(iconPath)));
+        } catch (Exception e) {
+            // Fallback to generic icon
+            try {
+                String fallback = item.isDirectory() ? 
+                    "/com/kentom/devcleaner/icons/folder.png" : 
+                    "/com/kentom/devcleaner/icons/file.png";
+                icon.setImage(new Image(getClass().getResourceAsStream(fallback)));
+            } catch (Exception ex) {
+                // No icon available
+            }
+        }
+        
+        return icon;
+    }
+
+    private long calculateDirectorySize(Path directory) {
+        try {
+            return Files.walk(directory)
+                    .filter(p -> p.toFile().isFile())
+                    .mapToLong(p -> {
+                        try {
+                            return Files.size(p);
+                        } catch (IOException e) {
+                            return 0;
+                        }
+                    })
+                    .sum();
+        } catch (IOException e) {
+            return 0;
+        }
     }
 
     @FXML
@@ -127,6 +311,98 @@ public class ProjectDetailsController {
         clipboard.setContent(content);
         
         showAlert(Alert.AlertType.INFORMATION, "Path Copied", "Project path has been copied to clipboard.");
+    }
+
+    // Action methods for project commands
+    private void runNpmInstall() {
+        runCommand("npm install", "Installing npm dependencies...");
+    }
+    
+    private void runNpmAudit() {
+        runCommand("npm audit", "Running npm security audit...");
+    }
+    
+    private void runMavenClean() {
+        runCommand("mvn clean", "Cleaning Maven project...");
+    }
+    
+    private void runMavenInstall() {
+        runCommand("mvn install", "Building Maven project...");
+    }
+    
+    private void runGradleClean() {
+        runCommand("gradle clean", "Cleaning Gradle project...");
+    }
+    
+    private void runGradleBuild() {
+        runCommand("gradle build", "Building Gradle project...");
+    }
+    
+    private void runPipInstall() {
+        runCommand("pip install -r requirements.txt", "Installing Python dependencies...");
+    }
+    
+    private void openTerminal() {
+        try {
+            String os = System.getProperty("os.name").toLowerCase();
+            ProcessBuilder pb;
+            
+            if (os.contains("mac")) {
+                pb = new ProcessBuilder("open", "-a", "Terminal", project.getPath().toString());
+            } else if (os.contains("windows")) {
+                pb = new ProcessBuilder("cmd", "/c", "start", "cmd", "/k", "cd", "/d", project.getPath().toString());
+            } else {
+                // Linux/Unix
+                pb = new ProcessBuilder("gnome-terminal", "--working-directory=" + project.getPath().toString());
+            }
+            
+            pb.start();
+            LogManager.log("Opened terminal for project: " + project.getName());
+        } catch (IOException e) {
+            LogManager.log("Failed to open terminal: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Terminal Error", "Could not open terminal for this project.");
+        }
+    }
+    
+    private void runCommand(String command, String statusMessage) {
+        showAlert(Alert.AlertType.INFORMATION, "Command Started", statusMessage + "\nCheck your terminal for output.");
+        
+        try {
+            String os = System.getProperty("os.name").toLowerCase();
+            ProcessBuilder pb;
+            
+            if (os.contains("windows")) {
+                pb = new ProcessBuilder("cmd", "/c", command);
+            } else {
+                pb = new ProcessBuilder("sh", "-c", command);
+            }
+            
+            pb.directory(project.getPath().toFile());
+            pb.inheritIO(); // This will show output in the parent process terminal
+            
+            Process process = pb.start();
+            LogManager.log("Started command '" + command + "' for project: " + project.getName());
+            
+            // Optional: Wait for completion in background thread
+            new Thread(() -> {
+                try {
+                    int exitCode = process.waitFor();
+                    Platform.runLater(() -> {
+                        if (exitCode == 0) {
+                            LogManager.log("Command completed successfully: " + command);
+                        } else {
+                            LogManager.log("Command failed with exit code " + exitCode + ": " + command);
+                        }
+                    });
+                } catch (InterruptedException e) {
+                    LogManager.log("Command interrupted: " + command);
+                }
+            }).start();
+            
+        } catch (IOException e) {
+            LogManager.log("Failed to run command '" + command + "': " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Command Error", "Failed to run command: " + command);
+        }
     }
 
     public void handleScanProject(ActionEvent actionEvent) {

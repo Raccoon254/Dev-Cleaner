@@ -76,7 +76,7 @@
 
 /* --- TEXT FIELDS --- */
 .text-field {
-    -fx-background-color: #2C2C2E;
+    -fx-background-color: #1e1e1f;
     -fx-text-fill: #F2F2F7;
     -fx-font-size: 16px;
     -fx-border-color: #3A3A3C;
@@ -155,7 +155,7 @@
 
 .input-group {
     -fx-alignment: center;
-    -fx-background-color: #2C2C2E;
+    -fx-background-color: #1e1e1f;
     -fx-background-radius: 12px;
     -fx-padding: 4px 15px;
 }
@@ -352,6 +352,133 @@
     -fx-background-color: #007AFF;
 }
 
+/* --- ENHANCED PROJECT DETAILS --- */
+.cleanable-items-container {
+    -fx-background-color: #171718;
+    -fx-background-radius: 12px;
+    -fx-border-radius: 12px;
+    -fx-border-color: transparent;
+    -fx-border-width: 1px;
+}
+
+.cleanable-item {
+    -fx-background-color: #1e1e1f;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: transparent;
+    -fx-border-width: 1px;
+    -fx-padding: 12px;
+    -fx-cursor: hand;
+}
+
+.cleanable-item:hover {
+    -fx-effect: dropshadow(gaussian, rgb(10, 132, 255), 2, 0, 0, 0);
+}
+
+.item-main-info {
+    -fx-alignment: center-left;
+    -fx-spacing: 12;
+}
+
+.item-icon {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 2, 0, 0, 1);
+}
+
+.item-name {
+    -fx-font-size: 15px;
+    -fx-text-fill: #F2F2F7;
+    -fx-font-weight: 600;
+}
+
+.item-size {
+    -fx-font-size: 13px;
+    -fx-text-fill: #8E8E93;
+    -fx-font-weight: 500;
+}
+
+.item-path {
+    -fx-font-size: 12px;
+    -fx-text-fill: #6D6D70;
+    -fx-wrap-text: true;
+}
+
+.stack-indicator {
+    -fx-background-color: #FF3B30;
+    -fx-text-fill: white;
+    -fx-font-size: 10px;
+    -fx-font-weight: 700;
+    -fx-background-radius: 8px;
+    -fx-padding: 2px 6px;
+    -fx-min-width: 20px;
+    -fx-alignment: center;
+}
+
+.project-action-button {
+    -fx-background-color: #0A84FF;
+    -fx-text-fill: white;
+    -fx-font-weight: 600;
+    -fx-font-size: 13px;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: transparent;
+    -fx-border-width: 2px;
+    -fx-padding: 8px 16px;
+    -fx-cursor: hand;
+    -fx-graphic-text-gap: 6px;
+}
+
+.project-action-button:hover {
+    -fx-border-color: #007AFF;
+}
+
+.action-button-success {
+    -fx-background-color: #30D158;
+}
+
+.action-button-success:hover {
+    -fx-border-color: #32D15A;
+}
+
+.action-button-warning {
+    -fx-background-color: #FF9500;
+}
+
+.action-button-warning:hover {
+    -fx-border-color: #FFAD33;
+}
+
+/* --- GIT INFO STYLING --- */
+.git-info-text {
+    -fx-font-size: 15px;
+    -fx-text-fill: #F2F2F7;
+    -fx-font-weight: 600;
+}
+
+.git-info-secondary {
+    -fx-font-size: 13px;
+    -fx-text-fill: #8E8E93;
+    -fx-font-weight: 500;
+}
+
+.git-status-badge {
+    -fx-background-color: #30D158;
+    -fx-text-fill: white;
+    -fx-font-size: 10px;
+    -fx-font-weight: 700;
+    -fx-background-radius: 8px;
+    -fx-padding: 2px 6px;
+    -fx-min-width: 20px;
+    -fx-alignment: center;
+}
+
+.git-status-badge.uncommitted {
+    -fx-background-color: #FF9500;
+}
+
+.git-status-badge.no-remote {
+    -fx-background-color: #8E8E93;
+}
+
 /* --- SCROLL & SETTINGS --- */
 .scroll-pane {
     -fx-background-color: transparent;
@@ -423,7 +550,7 @@
 
 /* --- DIALOG (ALERT) STYLING --- */
 .dialog-pane {
-    -fx-background-color: #2C2C2E;
+    -fx-background-color: #1e1e1f;
     -fx-border-color: #3A3A3C;
 }
 
@@ -560,7 +687,7 @@
 
 /* Form Dialogs */
 .form-dialog .input-field {
-    -fx-background-color: #2C2C2E;
+    -fx-background-color: #1e1e1f;
     -fx-text-fill: #F2F2F7;
     -fx-background-radius: 12px;
     -fx-padding: 12px 15px;
@@ -575,7 +702,7 @@
 /* Progress Dialogs */
 .progress-dialog .progress-bar {
     -fx-accent: #0A84FF;
-    -fx-background-color: #2C2C2E;
+    -fx-background-color: #1e1e1f;
     -fx-background-radius: 6px;
     -fx-pref-height: 8px;
 }

@@ -38,10 +38,40 @@
 
     <Label fx:id="projectSizeLabel" styleClass="details-info-header"/>
     <Label fx:id="projectDateLabel" styleClass="details-info"/>
+    
+    <!-- Git Repository Info -->
+    <VBox fx:id="gitInfoSection" spacing="8" visible="false" style="-fx-padding: 15 0;">
+        <Label text="Git Repository" styleClass="details-info-header"/>
+        <HBox spacing="15" alignment="CENTER_LEFT">
+            <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
+                <Image url="@icons/git.png"/>
+            </ImageView>
+            <VBox spacing="4">
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label fx:id="gitBranchLabel" styleClass="git-info-text"/>
+                    <Label fx:id="gitStatusLabel" styleClass="git-status-badge"/>
+                </HBox>
+                <Label fx:id="gitRemoteLabel" styleClass="git-info-secondary"/>
+                <HBox spacing="15" alignment="CENTER_LEFT">
+                    <Label fx:id="gitSizeLabel" styleClass="git-info-secondary"/>
+                    <Label fx:id="gitCommitsLabel" styleClass="git-info-secondary"/>
+                </HBox>
+            </VBox>
+        </HBox>
+    </VBox>
 
-    <VBox spacing="5" VBox.vgrow="ALWAYS" style="-fx-padding: 10 0 10 0;">
-        <Label text="Cleanable Files &amp; Folders:" styleClass="details-info-header"/>
-        <ListView fx:id="cleanableFilesListView" styleClass="cleanable-files-list" VBox.vgrow="ALWAYS"/>
+    <!-- Project Actions -->
+    <HBox fx:id="projectActionsBox" spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 10 0;">
+        <Label text="Quick Actions:" styleClass="details-info-header"/>
+    </HBox>
+
+    <!-- Cleanable Items with Enhanced View -->
+    <VBox spacing="10" VBox.vgrow="ALWAYS" style="-fx-padding: 10 0 10 0;">
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <Label text="Cleanable Files &amp; Folders:" styleClass="details-info-header"/>
+            <Label fx:id="itemCountLabel" styleClass="details-info" text=""/>
+        </HBox>
+        <VBox fx:id="cleanableItemsContainer" styleClass="cleanable-items-container" spacing="5" VBox.vgrow="ALWAYS"/>
     </VBox>
 
     <HBox spacing="10" alignment="CENTER_LEFT">

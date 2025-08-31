@@ -23,6 +23,7 @@ public class Project implements Serializable {
     private long totalSize = 0;
 
     private transient Image icon;
+    private transient GitInfo gitInfo;
 
     public Project(Path path, ProjectType type) {
         this.name = path.getFileName().toString();
@@ -38,6 +39,13 @@ public class Project implements Serializable {
     public LocalDateTime getDateCreated() { return dateCreated; }
     public long getSizeOfCleanableItems() { return sizeOfCleanableItems; }
     public long getTotalSize() { return totalSize; }
+    
+    public GitInfo getGitInfo() {
+        if (gitInfo == null) {
+            gitInfo = GitInfo.analyze(getPath());
+        }
+        return gitInfo;
+    }
 
     public Image getIcon() {
         if (icon == null) {
@@ -81,5 +89,6 @@ public class Project implements Serializable {
     private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException {
         ois.defaultReadObject();
         loadIcon();
+        // Git info will be loaded lazily when requested
     }
 }

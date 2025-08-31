@@ -113,8 +113,8 @@
                 <version>3.1.0</version>
                 <configuration>
                     <launcher>devcleaner=com.kentom.devcleaner.DevCleanerApp</launcher>
-                    <jlinkZipPath>${project.build.directory}/runtime.zip</jlinkZipPath>
-                    <jlinkImageName>runtime</jlinkImageName>
+<!--                    <jlinkZipPath>${project.build.directory}/runtime.zip</jlinkZipPath>-->
+<!--                    <jlinkImageName>runtime</jlinkImageName>-->
                     <noManPages>true</noManPages>
                     <stripDebug>true</stripDebug>
                     <compress>2</compress>
@@ -138,6 +138,15 @@
                 </executions>
             </plugin>
 
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.8</version>
+                <configuration>
+                    <mainClass>${main.class}</mainClass>
+                </configuration>
+            </plugin>
+
             <!-- Update jpackage plugin to use custom runtime -->
             <plugin>
                 <groupId>org.panteleyev</groupId>
@@ -157,7 +166,7 @@
                     <!-- macOS settings -->
                     <macPackageIdentifier>com.kentom.devcleaner</macPackageIdentifier>
                     <macPackageName>Dev Cleaner Pro</macPackageName>
-                    <packageType>dmg</packageType>
+<!--                    <packageType>dmg</packageType>-->
                     <macSign>false</macSign>
                     <macBundleSigningPrefix></macBundleSigningPrefix>
 

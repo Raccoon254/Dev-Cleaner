@@ -1,5 +1,6 @@
 package com.kentom.devcleaner;
 
+import com.kentom.devcleaner.model.GitInfo;
 import com.kentom.devcleaner.model.LogManager;
 import com.kentom.devcleaner.model.Project;
 import com.kentom.devcleaner.model.ProjectCache;
@@ -20,9 +21,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class ProjectsController {
 
@@ -32,10 +31,14 @@ public class ProjectsController {
     @FXML private Label totalProjectsLabel;
     @FXML private Label totalCleanableLabel;
     @FXML private Label projectTypesLabel;
-
+    @FXML private Button sortNameBtn;
+    @FXML private Button sortSizeBtn;
+    @FXML private Button sortDateBtn;
+    @FXML private Button sortTypeBtn;
 
     private MainController mainController;
     private List<Project> activeProjects;
+    private SortType currentSortType = SortType.NAME;
 
     public void setMainController(MainController mainController) {
         this.mainController = mainController;
@@ -43,6 +46,7 @@ public class ProjectsController {
 
     @FXML
     private void initialize() {
+        updateSortButtons();
         refreshProjects();
     }
 
@@ -64,7 +68,7 @@ public class ProjectsController {
         projectStatsBox.setManaged(projectsExist);
 
         updateHeaderStats();
-        populateGrid();
+        sortAndRefreshProjects();
     }
 
     private void populateGrid() {
@@ -81,22 +85,71 @@ public class ProjectsController {
     }
 
     private Node createProjectTile(Project project) {
-        VBox tile = new VBox(5);
+        VBox tile = new VBox(8);
         tile.getStyleClass().add("project-tile");
         tile.setAlignment(Pos.CENTER);
 
+        // Top section with icon and git indicator
+        HBox topSection = new HBox(8);
+        topSection.setAlignment(Pos.CENTER);
+        
         ImageView icon = new ImageView(project.getIcon());
-        icon.setFitHeight(48);
-        icon.setFitWidth(48);
+        icon.setFitHeight(52);
+        icon.setFitWidth(52);
         icon.setPreserveRatio(true);
+        topSection.getChildren().add(icon);
+        
+        // Git indicator
+        GitInfo gitInfo = project.getGitInfo();
+        if (gitInfo.isGitRepository()) {
+            ImageView gitIcon = new ImageView();
+            try {
+                gitIcon.setImage(new javafx.scene.image.Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/kentom/devcleaner/icons/github.png"))));
+                gitIcon.setFitHeight(16);
+                gitIcon.setFitWidth(16);
+                gitIcon.setPreserveRatio(true);
+                gitIcon.getStyleClass().add("git-icon");
+                topSection.getChildren().add(gitIcon);
+            } catch (Exception e) {
+                // Fallback if icon not found
+                Label gitLabel = new Label("Git");
+                gitLabel.getStyleClass().add("git-badge");
+                topSection.getChildren().add(gitLabel);
+            }
+        }
 
+        // Project name
         Label name = new Label(formatProjectName(project.getName()));
         name.getStyleClass().add("tile-title");
+        name.setWrapText(true);
+        name.setMaxWidth(160);
 
+        // Project info section
+        VBox infoSection = new VBox(4);
+        infoSection.setAlignment(Pos.CENTER);
+        
+        // Type and size in one row
+        HBox typeAndSize = new HBox(8);
+        typeAndSize.setAlignment(Pos.CENTER);
+        
         Label type = new Label(project.getType().displayName);
         type.getStyleClass().add("tile-subtitle");
+        
+        Label separator = new Label("•");
+        separator.getStyleClass().add("tile-separator");
+        
+        Label size = new Label(formatSize(project.getSizeOfCleanableItems()));
+        size.getStyleClass().add("tile-size");
+        
+        typeAndSize.getChildren().addAll(type, separator, size);
+        
+        // Date info
+        Label dateInfo = new Label("Updated " + formatDate(project.getDateCreated()));
+        dateInfo.getStyleClass().add("tile-date");
+        
+        infoSection.getChildren().addAll(typeAndSize, dateInfo);
 
-        tile.getChildren().addAll(icon, name, type);
+        tile.getChildren().addAll(topSection, name, infoSection);
         tile.setOnMouseClicked(event -> showProjectDetails(project));
 
         FadeTransition ft = new FadeTransition(Duration.millis(500), tile);
@@ -105,6 +158,31 @@ public class ProjectsController {
         ft.play();
 
         return tile;
+    }
+    
+    private String formatSize(long size) {
+        if (size < 1024) return size + " B";
+        int z = (63 - Long.numberOfLeadingZeros(size)) / 10;
+        return String.format("%.1f %sB", (double) size / (1L << (z * 10)), " KMGTPE".charAt(z));
+    }
+    
+    private String formatDate(java.time.LocalDateTime date) {
+        java.time.temporal.ChronoUnit unit = java.time.temporal.ChronoUnit.DAYS;
+        long daysAgo = unit.between(date.toLocalDate(), java.time.LocalDate.now());
+        
+        if (daysAgo == 0) {
+            return "today";
+        } else if (daysAgo == 1) {
+            return "yesterday";
+        } else if (daysAgo < 30) {
+            return daysAgo + " days ago";
+        } else if (daysAgo < 365) {
+            long monthsAgo = daysAgo / 30;
+            return monthsAgo + " month" + (monthsAgo > 1 ? "s" : "") + " ago";
+        } else {
+            long yearsAgo = daysAgo / 365;
+            return yearsAgo + " year" + (yearsAgo > 1 ? "s" : "") + " ago";
+        }
     }
 
     private String formatProjectName(String name) {
@@ -178,5 +256,84 @@ public class ProjectsController {
                 .count();
         
         projectTypesLabel.setText(String.valueOf(uniqueTypes));
+    }
+    
+    @FXML
+    private void sortByName() {
+        currentSortType = SortType.NAME;
+        updateSortButtons();
+        sortAndRefreshProjects();
+    }
+    
+    @FXML
+    private void sortBySize() {
+        currentSortType = SortType.SIZE;
+        updateSortButtons();
+        sortAndRefreshProjects();
+    }
+    
+    @FXML
+    private void sortByDate() {
+        currentSortType = SortType.DATE;
+        updateSortButtons();
+        sortAndRefreshProjects();
+    }
+    
+    @FXML
+    private void sortByType() {
+        currentSortType = SortType.TYPE;
+        updateSortButtons();
+        sortAndRefreshProjects();
+    }
+    
+    private void sortAndRefreshProjects() {
+        if (activeProjects == null || activeProjects.isEmpty()) {
+            return;
+        }
+        
+        switch (currentSortType) {
+            case NAME:
+                activeProjects.sort(Comparator.comparing(Project::getName, String.CASE_INSENSITIVE_ORDER));
+                break;
+            case SIZE:
+                activeProjects.sort(Comparator.comparingLong(Project::getSizeOfCleanableItems).reversed());
+                break;
+            case DATE:
+                activeProjects.sort(Comparator.comparing(Project::getDateCreated).reversed());
+                break;
+            case TYPE:
+                activeProjects.sort(Comparator.comparing(p -> p.getType().displayName));
+                break;
+        }
+        
+        populateGrid();
+    }
+    
+    private void updateSortButtons() {
+        // Reset all button styles
+        sortNameBtn.getStyleClass().removeAll("sort-button-active");
+        sortSizeBtn.getStyleClass().removeAll("sort-button-active");
+        sortDateBtn.getStyleClass().removeAll("sort-button-active");
+        sortTypeBtn.getStyleClass().removeAll("sort-button-active");
+        
+        // Activate current sort button
+        switch (currentSortType) {
+            case NAME:
+                sortNameBtn.getStyleClass().add("sort-button-active");
+                break;
+            case SIZE:
+                sortSizeBtn.getStyleClass().add("sort-button-active");
+                break;
+            case DATE:
+                sortDateBtn.getStyleClass().add("sort-button-active");
+                break;
+            case TYPE:
+                sortTypeBtn.getStyleClass().add("sort-button-active");
+                break;
+        }
+    }
+    
+    private enum SortType {
+        NAME, SIZE, DATE, TYPE
     }
 }

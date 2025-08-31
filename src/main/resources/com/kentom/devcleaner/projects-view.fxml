@@ -23,7 +23,7 @@
                     <Label styleClass="view-subtitle" wrapText="true"
                            text="Manage your development projects. Click any project to view details and clean up generated files."/>
                     
-                    <!-- Project Stats -->
+                    <!-- Project Stats and Sort Controls -->
                     <HBox fx:id="projectStatsBox" spacing="20" alignment="CENTER_LEFT" visible="false">
                         <VBox styleClass="header-stat-item" spacing="5">
                             <Label styleClass="stat-number" fx:id="totalProjectsLabel" text="0"/>
@@ -37,6 +37,39 @@
                             <Label styleClass="stat-number" fx:id="projectTypesLabel" text="0"/>
                             <Label styleClass="stat-label" text="Types"/>
                         </VBox>
+                        
+                        <!-- Sort Controls -->
+                        <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 0 0 0 30;">
+                            <Label text="Sort by:" styleClass="sort-label"/>
+                            <Button fx:id="sortNameBtn" onAction="#sortByName" styleClass="sort-button" text="Name">
+                                <graphic>
+                                    <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
+                                        <Image url="@icons/sort-by-alphabet.png"/>
+                                    </ImageView>
+                                </graphic>
+                            </Button>
+                            <Button fx:id="sortSizeBtn" onAction="#sortBySize" styleClass="sort-button" text="Size">
+                                <graphic>
+                                    <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
+                                        <Image url="@icons/sort-by-size.png"/>
+                                    </ImageView>
+                                </graphic>
+                            </Button>
+                            <Button fx:id="sortDateBtn" onAction="#sortByDate" styleClass="sort-button" text="Date">
+                                <graphic>
+                                    <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
+                                        <Image url="@icons/sort-by-time.png"/>
+                                    </ImageView>
+                                </graphic>
+                            </Button>
+                            <Button fx:id="sortTypeBtn" onAction="#sortByType" styleClass="sort-button" text="Type">
+                                <graphic>
+                                    <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
+                                        <Image url="@icons/terminal.png"/>
+                                    </ImageView>
+                                </graphic>
+                            </Button>
+                        </HBox>
                     </HBox>
                 </VBox>
                 

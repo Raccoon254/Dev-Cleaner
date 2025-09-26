@@ -7,6 +7,10 @@ on:
   pull_request:
     branches: [ main ]
 
+permissions:
+  contents: write
+  packages: write
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -51,25 +55,21 @@ jobs:
       with:
         path: artifacts
 
-    - name: Create release tag
-      id: create_tag
+    - name: Generate release info
+      id: release_info
       run: |
         TAG_NAME="v$(date +'%Y.%m.%d')-build.${{ github.run_number }}"
         echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git tag $TAG_NAME
-        git push origin $TAG_NAME
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        echo "release_name=Dev Cleaner Pro $TAG_NAME" >> $GITHUB_OUTPUT
 
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
-        tag_name: ${{ steps.create_tag.outputs.tag_name }}
-        name: "Dev Cleaner Pro ${{ steps.create_tag.outputs.tag_name }}"
+        tag_name: ${{ steps.release_info.outputs.tag_name }}
+        name: ${{ steps.release_info.outputs.release_name }}
+        make_latest: true
         body: |
-          # Dev Cleaner Pro ${{ steps.create_tag.outputs.tag_name }}
+          # Dev Cleaner Pro ${{ steps.release_info.outputs.tag_name }}
 
           Automated release built from commit ${{ github.sha }}
 

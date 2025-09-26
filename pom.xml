@@ -175,7 +175,6 @@
                     <appVersion>1.0.1</appVersion>
                     <vendor>kenTom</vendor>
                     <copyright>Copyright © 2023 kenTom</copyright>
-                    <icon>src/main/resources/com/kentom/devcleaner/icons/app-icon.icns</icon>
                     <mainClass>${main.class}</mainClass>
                     <mainJar>${project.artifactId}-${project.version}.jar</mainJar>
                     <input>${project.build.directory}</input>
@@ -183,23 +182,6 @@
 
                     <!-- Use JavaFX jlink runtime -->
                     <runtimeImage>${project.build.directory}/image</runtimeImage>
-
-                    <!-- macOS settings -->
-                    <macPackageIdentifier>com.kentom.devcleaner</macPackageIdentifier>
-                    <macPackageName>Dev Cleaner Pro</macPackageName>
-                    <packageType>dmg</packageType>
-                    <macSign>false</macSign>
-                    <macBundleSigningPrefix></macBundleSigningPrefix>
-
-                    <!-- Create Universal binary -->
-                    <javaOptions>
-                        <javaOption>-Dapple.awt.UIElement=true</javaOption>
-                    </javaOptions>
-
-                    <!-- Use custom runtime -->
-                    <!-- <runtimeImage>${project.build.directory}/runtime</runtimeImage> -->
-
-                    <resourceDir>src/main/deploy/package/macos</resourceDir>
                 </configuration>
                 <executions>
                     <execution>
@@ -212,4 +194,92 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <!-- macOS Profile -->
+        <profile>
+            <id>macos</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.panteleyev</groupId>
+                        <artifactId>jpackage-maven-plugin</artifactId>
+                        <configuration>
+                            <icon>src/main/resources/com/kentom/devcleaner/icons/app-icon.icns</icon>
+                            <resourceDir>src/main/deploy/package/macos</resourceDir>
+                            <packageType>dmg</packageType>
+                            <macPackageIdentifier>com.kentom.devcleaner</macPackageIdentifier>
+                            <macPackageName>Dev Cleaner Pro</macPackageName>
+                            <macSign>false</macSign>
+                            <macBundleSigningPrefix></macBundleSigningPrefix>
+                            <javaOptions>
+                                <javaOption>-Dapple.awt.UIElement=true</javaOption>
+                            </javaOptions>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Windows Profile -->
+        <profile>
+            <id>windows</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                </os>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.panteleyev</groupId>
+                        <artifactId>jpackage-maven-plugin</artifactId>
+                        <configuration>
+                            <icon>src/main/resources/com/kentom/devcleaner/icons/app-icon.ico</icon>
+                            <resourceDir>src/main/deploy/package/windows</resourceDir>
+                            <packageType>msi</packageType>
+                            <winDirChooser>true</winDirChooser>
+                            <winMenu>true</winMenu>
+                            <winMenuGroup>kenTom</winMenuGroup>
+                            <winShortcut>true</winShortcut>
+                            <winPerUserInstall>false</winPerUserInstall>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Linux Profile -->
+        <profile>
+            <id>linux</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                    <name>!Mac OS X</name>
+                </os>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.panteleyev</groupId>
+                        <artifactId>jpackage-maven-plugin</artifactId>
+                        <configuration>
+                            <icon>src/main/resources/com/kentom/devcleaner/icons/logo-512x512.png</icon>
+                            <resourceDir>src/main/deploy/package/linux</resourceDir>
+                            <packageType>deb</packageType>
+                            <linuxPackageName>dev-cleaner-pro</linuxPackageName>
+                            <linuxDebMaintainer>kenTom &lt;kentom@example.com&gt;</linuxDebMaintainer>
+                            <linuxMenuGroup>Development</linuxMenuGroup>
+                            <linuxShortcut>true</linuxShortcut>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

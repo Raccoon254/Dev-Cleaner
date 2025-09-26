@@ -16,7 +16,16 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest, windows-latest, ubuntu-latest]
+        include:
+          - os: macos-latest
+            profile: macos
+            artifact-name: "macOS"
+          - os: windows-latest
+            profile: windows
+            artifact-name: "Windows"
+          - os: ubuntu-latest
+            profile: linux
+            artifact-name: "Linux"
 
     steps:
     - uses: actions/checkout@v3
@@ -33,13 +42,13 @@ jobs:
         path: ~/.m2
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
 
-    - name: Build with Maven
-      run: mvn clean package
+    - name: Build with Maven (Platform Specific)
+      run: mvn clean package -P${{ matrix.profile }}
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ matrix.os }}-build
+        name: ${{ matrix.artifact-name }}-build
         path: target/jpackage/
 
   release:
@@ -74,9 +83,9 @@ jobs:
           Automated release built from commit ${{ github.sha }}
 
           ## Downloads
-          - **macOS**: Download the `.dmg` file
-          - **Windows**: Download the `.exe` or `.msi` file
-          - **Linux**: Download the `.deb` file
+          - **macOS**: Download the `.dmg` file (Apple Silicon & Intel compatible)
+          - **Windows**: Download the `.msi` file (Windows Installer)
+          - **Linux**: Download the `.deb` file (Debian/Ubuntu package)
 
           ## Installation
           1. Download the appropriate file for your platform

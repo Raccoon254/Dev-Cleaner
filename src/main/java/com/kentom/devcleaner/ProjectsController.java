@@ -3,7 +3,7 @@ package com.kentom.devcleaner;
 import com.kentom.devcleaner.model.GitInfo;
 import com.kentom.devcleaner.model.LogManager;
 import com.kentom.devcleaner.model.Project;
-import com.kentom.devcleaner.model.ProjectCache;
+import com.kentom.devcleaner.service.ApplicationDataService;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -40,6 +40,7 @@ public class ProjectsController {
     private MainController mainController;
     private List<Project> activeProjects;
     private SortType currentSortType = SortType.NAME;
+    private ApplicationDataService dataService;
 
     public void setMainController(MainController mainController) {
         this.mainController = mainController;
@@ -47,9 +48,17 @@ public class ProjectsController {
 
     @FXML
     private void initialize() {
+        dataService = ApplicationDataService.getInstance();
+
+        // Listen for data changes and loading status
+        dataService.addDataChangeListener(this::updateProjects);
+        dataService.addLoadingStatusListener(this::updateLoadingStatus);
+
         updateSortButtons();
         setupResponsiveTilePane();
-        refreshProjects();
+
+        // Show initial state based on current data
+        updateInitialState();
     }
     
     private void setupResponsiveTilePane() {
@@ -62,72 +71,42 @@ public class ProjectsController {
         });
     }
 
-    public void refreshProjects() {
-        // Show loading state immediately
-        showLoadingState();
-        
-        // Load projects asynchronously
-        Task<List<Project>> loadProjectsTask = new Task<List<Project>>() {
-            @Override
-            protected List<Project> call() throws Exception {
-                // Update loading status
-                Platform.runLater(() -> loadingStatusLabel.setText("Loading cached projects..."));
-                
-                // Load projects from cache
-                List<Project> projects = ProjectCache.loadProjects();
-                
-                // If we have projects, perform lightweight analysis
-                if (!projects.isEmpty()) {
-                    int totalProjects = projects.size();
-                    
-                    // Process projects in batches for better responsiveness
-                    for (int i = 0; i < projects.size(); i += 5) {
-                        final int batchStart = i;
-                        final int batchEnd = Math.min(i + 5, projects.size());
-                        
-                        Platform.runLater(() -> 
-                            loadingStatusLabel.setText(String.format("Processing projects %d-%d of %d...", 
-                                batchStart + 1, batchEnd, totalProjects))
-                        );
-                        
-                        // Process batch of 5 projects
-                        for (int j = batchStart; j < batchEnd; j++) {
-                            Project project = projects.get(j);
-                            // Pre-load Git info in background (this will cache it)
-                            try {
-                                project.getGitInfo();
-                            } catch (Exception e) {
-                                // Ignore Git analysis errors for individual projects
-                            }
-                        }
-                        
-                        // Small delay between batches
-                        Thread.sleep(100);
-                    }
-                }
-                
-                return projects;
-            }
-        };
-        
-        loadProjectsTask.setOnSucceeded(e -> {
-            activeProjects = loadProjectsTask.getValue();
-            Platform.runLater(this::displayProjectsResults);
-        });
-        
-        loadProjectsTask.setOnFailed(e -> {
-            Platform.runLater(() -> {
-                hideLoadingState();
-                // Show error or empty state
-                activeProjects = new ArrayList<>();
-                displayProjectsResults();
-            });
-        });
-        
-        // Run the task in background thread
-        Thread loadingThread = new Thread(loadProjectsTask);
-        loadingThread.setDaemon(true);
-        loadingThread.start();
+    // Manual refresh - triggers data service refresh
+    @FXML
+    private void refreshProjects() {
+        dataService.refreshData();
+    }
+
+    // Show initial state (loading or data)
+    private void updateInitialState() {
+        if (dataService.isLoading()) {
+            showLoadingState();
+        } else if (dataService.isInitialLoadComplete()) {
+            hideLoadingState();
+            updateProjects();
+        } else {
+            showLoadingState();
+        }
+    }
+
+    // Update projects with current cached data
+    private void updateProjects() {
+        activeProjects = new ArrayList<>(dataService.getProjects());
+        displayProjectsResults();
+    }
+
+    // Update loading status from data service
+    private void updateLoadingStatus(String status) {
+        if (loadingStatusLabel != null) {
+            loadingStatusLabel.setText(status);
+        }
+
+        // Show/hide loading state based on service state
+        if (dataService.isLoading()) {
+            showLoadingState();
+        } else {
+            hideLoadingState();
+        }
     }
     
     private void showLoadingState() {
@@ -328,9 +307,8 @@ public class ProjectsController {
     }
 
     public void removeProject(Project project) {
-        activeProjects.remove(project);
-        ProjectCache.saveProjects(activeProjects);
-        refreshProjects();
+        dataService.removeProject(project);
+        // No need to refresh - data service will notify listeners automatically
     }
 
     public void showProjectDetails(Project project) {

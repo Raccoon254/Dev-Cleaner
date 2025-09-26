@@ -3,6 +3,7 @@ name: Build Multi-Platform
 on:
   push:
     branches: [ main ]
+    tags: [ 'v*' ]
   pull_request:
     branches: [ main ]
 
@@ -36,3 +37,55 @@ jobs:
       with:
         name: ${{ matrix.os }}-build
         path: target/jpackage/
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: artifacts
+
+    - name: Create release tag
+      id: create_tag
+      run: |
+        TAG_NAME="v$(date +'%Y.%m.%d')-build.${{ github.run_number }}"
+        echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git tag $TAG_NAME
+        git push origin $TAG_NAME
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ steps.create_tag.outputs.tag_name }}
+        name: "Dev Cleaner Pro ${{ steps.create_tag.outputs.tag_name }}"
+        body: |
+          # Dev Cleaner Pro ${{ steps.create_tag.outputs.tag_name }}
+
+          Automated release built from commit ${{ github.sha }}
+
+          ## Downloads
+          - **macOS**: Download the `.dmg` file
+          - **Windows**: Download the `.exe` or `.msi` file
+          - **Linux**: Download the `.deb` file
+
+          ## Installation
+          1. Download the appropriate file for your platform
+          2. Install following your platform's standard procedure
+          3. Launch Dev Cleaner Pro
+
+          Built on: $(date +'%Y-%m-%d %H:%M:%S UTC')
+        files: artifacts/**/*
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

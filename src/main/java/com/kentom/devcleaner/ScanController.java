@@ -3,7 +3,7 @@ package com.kentom.devcleaner;
 import com.kentom.devcleaner.model.DirectoryScanner;
 import com.kentom.devcleaner.model.LogManager;
 import com.kentom.devcleaner.model.Project;
-import com.kentom.devcleaner.model.ProjectCache;
+import com.kentom.devcleaner.service.ApplicationDataService;
 import com.kentom.devcleaner.util.UserPreferences;
 import javafx.animation.RotateTransition;
 import javafx.application.Platform;
@@ -99,7 +99,7 @@ public class ScanController {
             List<Project> newProjects = scanTask.getValue();
             Platform.runLater(() -> scanStatusLabel.setText("Found " + newProjects.size() + " projects. Saving..."));
             mergeAndSaveProjects(newProjects);
-            projectsController.refreshProjects();
+            // No need to manually refresh - ApplicationDataService will notify all listeners
             Platform.runLater(() -> {
                 scanBox.setVisible(true);
                 scanningBox.setVisible(false);
@@ -120,13 +120,16 @@ public class ScanController {
     }
 
     private void mergeAndSaveProjects(List<Project> newProjects) {
-        List<Project> existingProjects = ProjectCache.loadProjects();
+        ApplicationDataService dataService = ApplicationDataService.getInstance();
+        List<Project> existingProjects = dataService.getProjects();
         Map<Path, Project> projectMap = existingProjects.stream()
                 .collect(Collectors.toMap(Project::getPath, Function.identity()));
         for (Project newProject : newProjects) {
             projectMap.put(newProject.getPath(), newProject);
         }
-        ProjectCache.saveProjects(new java.util.ArrayList<>(projectMap.values()));
+
+        // Update data service with merged projects
+        dataService.updateProjects(new java.util.ArrayList<>(projectMap.values()));
     }
 
     private void showAlert(Alert.AlertType alertType, String title, String message) {

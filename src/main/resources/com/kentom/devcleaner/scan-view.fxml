@@ -67,17 +67,126 @@
         </VBox>
     </ScrollPane>
 
-    <!-- Scanning In Progress State -->
-    <VBox fx:id="scanningBox" alignment="CENTER" spacing="25.0" visible="false" styleClass="scanning-overlay">
-        <VBox styleClass="scanning-card" spacing="25" alignment="CENTER">
-            <ImageView fitHeight="100" fitWidth="100" preserveRatio="true">
-                <Image url="@icons/Insider-loading.gif"/>
-            </ImageView>
-            <VBox alignment="CENTER" spacing="10">
-                <Label styleClass="scan-status-title" text="Scanning in Progress"/>
-                <Label fx:id="scanStatusLabel" styleClass="scan-status-text" text="Initializing..."/>
+    <!-- Enhanced Scanning In Progress State -->
+    <ScrollPane fx:id="scanningBox" fitToWidth="true" styleClass="scroll-pane" visible="false">
+        <VBox styleClass="scanning-container" spacing="30">
+
+            <!-- Header Section -->
+            <VBox alignment="CENTER" spacing="15" styleClass="scanning-header">
+                <ImageView fitHeight="60" fitWidth="60" preserveRatio="true">
+                    <Image url="@icons/Insider-loading.gif"/>
+                </ImageView>
+                <Label styleClass="scanning-title" text="Scanning in Progress"/>
+                <Label fx:id="scanPhaseLabel" styleClass="scanning-phase" text="Initializing..."/>
             </VBox>
+
+            <!-- Progress Section -->
+            <VBox spacing="20" styleClass="progress-section">
+
+                <!-- Main Progress Bar -->
+                <VBox spacing="8" alignment="CENTER">
+                    <HBox spacing="10" alignment="CENTER">
+                        <Label fx:id="progressPercentageLabel" styleClass="progress-percentage" text="0%"/>
+                        <Label fx:id="progressETALabel" styleClass="progress-eta" text="Estimating..."/>
+                    </HBox>
+                    <javafx.scene.control.ProgressBar fx:id="scanProgressBar" styleClass="main-progress-bar" prefWidth="400" progress="0"/>
+                </VBox>
+
+                <!-- Current Scanning Info -->
+                <VBox spacing="12" styleClass="current-scan-info">
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
+                            <Image url="@icons/folder.png"/>
+                        </ImageView>
+                        <Label styleClass="scan-info-label" text="Current Folder:"/>
+                        <Label fx:id="currentFolderLabel" styleClass="scan-info-value" text="/" wrapText="true"/>
+                    </HBox>
+
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
+                            <Image url="@icons/scan.png"/>
+                        </ImageView>
+                        <Label styleClass="scan-info-label" text="Processing:"/>
+                        <Label fx:id="currentFileLabel" styleClass="scan-info-value" text="Preparing scan..."/>
+                    </HBox>
+                </VBox>
+            </VBox>
+
+            <!-- Statistics Grid -->
+            <HBox spacing="30" alignment="CENTER" styleClass="stats-grid">
+
+                <!-- Left Column -->
+                <VBox spacing="15" alignment="CENTER" styleClass="stats-column">
+                    <Label styleClass="stats-column-title" text="Scan Progress"/>
+
+                    <VBox spacing="8" alignment="CENTER">
+                        <Label fx:id="directoriesScannedLabel" styleClass="stat-number" text="0"/>
+                        <Label styleClass="stat-label" text="Directories Scanned"/>
+                    </VBox>
+
+                    <VBox spacing="8" alignment="CENTER">
+                        <Label fx:id="filesScannedLabel" styleClass="stat-number" text="0"/>
+                        <Label styleClass="stat-label" text="Files Processed"/>
+                    </VBox>
+
+                    <VBox spacing="8" alignment="CENTER">
+                        <Label fx:id="scanSpeedLabel" styleClass="stat-number" text="0/s"/>
+                        <Label styleClass="stat-label" text="Scan Speed"/>
+                    </VBox>
+                </VBox>
+
+                <!-- Right Column -->
+                <VBox spacing="15" alignment="CENTER" styleClass="stats-column">
+                    <Label styleClass="stats-column-title" text="Projects Found"/>
+
+                    <VBox spacing="8" alignment="CENTER">
+                        <Label fx:id="projectsFoundLabel" styleClass="stat-number highlight" text="0"/>
+                        <Label styleClass="stat-label" text="Projects Discovered"/>
+                    </VBox>
+
+                    <VBox spacing="8" alignment="CENTER">
+                        <Label fx:id="cleanableSpaceLabel" styleClass="stat-number highlight" text="0 B"/>
+                        <Label styleClass="stat-label" text="Cleanable Space"/>
+                    </VBox>
+
+                    <VBox spacing="8" alignment="CENTER">
+                        <Label fx:id="totalDataLabel" styleClass="stat-number" text="0 B"/>
+                        <Label styleClass="stat-label" text="Data Processed"/>
+                    </VBox>
+                </VBox>
+            </HBox>
+
+            <!-- Recent Discoveries -->
+            <VBox fx:id="recentDiscoveriesSection" spacing="15" styleClass="recent-discoveries" visible="false" managed="false">
+                <Label styleClass="section-title" text="Recent Discoveries"/>
+                <VBox fx:id="recentProjectsList" spacing="8" styleClass="recent-projects-list"/>
+            </VBox>
+
+            <!-- Project Types Breakdown -->
+            <VBox fx:id="projectTypesSection" spacing="15" styleClass="project-types" visible="false" managed="false">
+                <Label styleClass="section-title" text="Project Types Found"/>
+                <HBox fx:id="projectTypesList" spacing="12" alignment="CENTER" styleClass="project-types-list"/>
+            </VBox>
+
+            <!-- Control Buttons -->
+            <HBox spacing="15" alignment="CENTER" styleClass="scan-controls">
+                <Button fx:id="pauseButton" styleClass="control-button secondary" text="Pause" onAction="#handlePauseAction" visible="false" managed="false"/>
+                <Button fx:id="cancelButton" styleClass="control-button danger" text="Cancel Scan" onAction="#handleCancelAction"/>
+            </HBox>
+
+            <!-- Performance Info (Small Footer) -->
+            <VBox spacing="5" alignment="CENTER" styleClass="performance-info">
+                <HBox spacing="20" alignment="CENTER">
+                    <Label fx:id="elapsedTimeLabel" styleClass="performance-stat" text="Elapsed: 0s"/>
+                    <Label fx:id="errorsCountLabel" styleClass="performance-stat" text="Errors: 0"/>
+                </HBox>
+                <VBox fx:id="recentErrorsSection" spacing="5" visible="false" managed="false">
+                    <Label styleClass="errors-title" text="Recent Issues:"/>
+                    <VBox fx:id="recentErrorsList" spacing="3" styleClass="recent-errors-list"/>
+                </VBox>
+            </VBox>
+
         </VBox>
-    </VBox>
+    </ScrollPane>
 
 </StackPane>

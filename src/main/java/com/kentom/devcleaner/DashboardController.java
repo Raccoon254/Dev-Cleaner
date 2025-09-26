@@ -2,10 +2,9 @@ package com.kentom.devcleaner;
 
 import com.kentom.devcleaner.model.GitInfo;
 import com.kentom.devcleaner.model.Project;
-import com.kentom.devcleaner.model.ProjectCache;
 import com.kentom.devcleaner.model.ProjectType;
+import com.kentom.devcleaner.service.ApplicationDataService;
 import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -52,6 +51,7 @@ public class DashboardController {
     @FXML private Label loadingStatusLabel;
 
     private MainController mainController;
+    private ApplicationDataService dataService;
 
     public void setMainController(MainController mainController) {
         this.mainController = mainController;
@@ -59,71 +59,56 @@ public class DashboardController {
 
     @FXML
     private void initialize() {
-        refreshDashboard();
+        dataService = ApplicationDataService.getInstance();
+
+        // Listen for data changes and loading status
+        dataService.addDataChangeListener(this::updateDashboard);
+        dataService.addLoadingStatusListener(this::updateLoadingStatus);
+
+        // Show initial state based on current data
+        updateInitialState();
     }
 
-    public void refreshDashboard() {
-        // Show loading state immediately
-        showLoadingState();
-        
-        // Create background task for loading dashboard data
-        Task<Void> loadDashboardTask = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                // Update loading status
-                Platform.runLater(() -> loadingStatusLabel.setText("Loading project data..."));
-                
-                // Load projects (this might take time)
-                List<Project> projects = ProjectCache.loadProjects();
-                
-                // Update UI components on JavaFX thread
-                Platform.runLater(() -> {
-                    loadingStatusLabel.setText("Calculating statistics...");
-                    updateLastUpdated();
-                    updatePrimaryStats();
-                });
-                
-                // Small delay to show progress
-                Thread.sleep(100);
-                
-                Platform.runLater(() -> {
-                    loadingStatusLabel.setText("Analyzing project types...");
-                    updateProjectTypesBreakdown();
-                });
-                
-                Thread.sleep(100);
-                
-                Platform.runLater(() -> {
-                    loadingStatusLabel.setText("Processing activity data...");
-                    updateLargestProjects();
-                    updateRecentActivity();
-                });
-                
-                Thread.sleep(100);
-                
-                Platform.runLater(() -> {
-                    loadingStatusLabel.setText("Finalizing dashboard...");
-                    updateSystemHealth();
-                });
-                
-                return null;
-            }
-            
-            @Override
-            protected void succeeded() {
-                Platform.runLater(() -> hideLoadingState());
-            }
-            
-            @Override
-            protected void failed() {
-                Platform.runLater(() -> hideLoadingState());
-            }
-        };
-        
-        // Start the background task
-        Thread loadingThread = new Thread(loadDashboardTask);
-        loadingThread.setDaemon(true);
-        loadingThread.start();
+    // Manual refresh - triggers data service refresh
+    @FXML
+    private void refreshDashboard() {
+        dataService.refreshData();
+    }
+
+    // Show initial state (loading or data)
+    private void updateInitialState() {
+        if (dataService.isLoading()) {
+            showLoadingState();
+        } else if (dataService.isInitialLoadComplete()) {
+            hideLoadingState();
+            updateDashboard();
+        } else {
+            showLoadingState();
+        }
+    }
+
+    // Update dashboard with current cached data
+    private void updateDashboard() {
+        updateLastUpdated();
+        updatePrimaryStats();
+        updateProjectTypesBreakdown();
+        updateLargestProjects();
+        updateRecentActivity();
+        updateSystemHealth();
+    }
+
+    // Update loading status from data service
+    private void updateLoadingStatus(String status) {
+        if (loadingStatusLabel != null) {
+            loadingStatusLabel.setText(status);
+        }
+
+        // Show/hide loading state based on service state
+        if (dataService.isLoading()) {
+            showLoadingState();
+        } else {
+            hideLoadingState();
+        }
     }
     
     private void showLoadingState() {
@@ -146,7 +131,7 @@ public class DashboardController {
     }
 
     private void updatePrimaryStats() {
-        List<Project> projects = ProjectCache.loadProjects();
+        List<Project> projects = dataService.getProjects();
         
         // Basic counts
         int totalProjects = projects.size();
@@ -201,8 +186,8 @@ public class DashboardController {
     
     private void updateProjectTypesBreakdown() {
         projectTypesBreakdown.getChildren().clear();
-        
-        List<Project> projects = ProjectCache.loadProjects();
+
+        List<Project> projects = dataService.getProjects();
         if (projects.isEmpty()) {
             Label emptyLabel = new Label("No projects to analyze");
             emptyLabel.getStyleClass().add("empty-breakdown");
@@ -247,8 +232,8 @@ public class DashboardController {
     
     private void updateLargestProjects() {
         largestProjectsList.getChildren().clear();
-        
-        List<Project> projects = ProjectCache.loadProjects();
+
+        List<Project> projects = dataService.getProjects();
         if (projects.isEmpty()) {
             Label emptyLabel = new Label("No projects to analyze");
             emptyLabel.getStyleClass().add("empty-breakdown");
@@ -281,8 +266,8 @@ public class DashboardController {
 
     private void updateRecentActivity() {
         recentActivityBox.getChildren().clear();
-        
-        List<Project> projects = ProjectCache.loadProjects();
+
+        List<Project> projects = dataService.getProjects();
         
         if (projects.isEmpty()) {
             Label noActivity = new Label("No recent activity");
@@ -318,7 +303,7 @@ public class DashboardController {
     }
     
     private void updateSystemHealth() {
-        List<Project> projects = ProjectCache.loadProjects();
+        List<Project> projects = dataService.getProjects();
         
         // Cache Status
         if (!projects.isEmpty()) {

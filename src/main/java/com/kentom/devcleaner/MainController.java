@@ -1,5 +1,6 @@
 package com.kentom.devcleaner;
 
+import com.kentom.devcleaner.service.ApplicationDataService;
 import javafx.animation.FadeTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -26,6 +27,9 @@ public class MainController {
 
     @FXML
     public void initialize() throws IOException {
+        // Initialize the application data service first
+        ApplicationDataService.getInstance().initializeData();
+
         // Pre-load all the views
         FXMLLoader dashboardLoader = new FXMLLoader(getClass().getResource("dashboard-view.fxml"));
         dashboardView = dashboardLoader.load();
@@ -49,13 +53,13 @@ public class MainController {
     @FXML
     private void showDashboard() {
         switchView(dashboardView);
-        dashboardController.refreshDashboard(); // Refresh dashboard when switching to the view
+        // No refresh needed - dashboard will use cached data
     }
 
     @FXML
     public void showProjects() {
         switchView(projectsView);
-        projectsController.refreshProjects(); // Refresh projects when switching to the view
+        // No refresh needed - projects will use cached data
     }
 
     @FXML

@@ -14,6 +14,7 @@
         <junit.version>5.10.2</junit.version>
         <javafx.version>21</javafx.version>
         <main.class>com.kentom.devcleaner.DevCleanerApp</main.class>
+        <java.home>/Users/user/Library/Java/JavaVirtualMachines/openjdk-23.0.2/Contents/Home</java.home>
     </properties>
 
     <dependencies>
@@ -127,6 +128,8 @@
                         <addModule>java.logging</addModule>
                     </addModules>
                 </configuration>
+                <!-- Commented out executions to avoid jlink issues with automatic modules -->
+                <!--
                 <executions>
                     <execution>
                         <id>create-runtime</id>
@@ -136,6 +139,7 @@
                         </goals>
                     </execution>
                 </executions>
+                -->
             </plugin>
 
             <plugin>
@@ -143,8 +147,21 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <mainClass>com.kentom.devcleaner/com.kentom.devcleaner.DevCleanerApp</mainClass>
+                    <mainClass>com.kentom.devcleaner.DevCleanerApp</mainClass>
+                    <commandlineArgs>--add-opens java.base/java.lang=ALL-UNNAMED</commandlineArgs>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>jlink</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jlink</goal>
+                        </goals>
+                        <configuration>
+                            <launcher>devcleaner</launcher>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- Update jpackage plugin to use custom runtime -->
@@ -153,6 +170,7 @@
                 <artifactId>jpackage-maven-plugin</artifactId>
                 <version>1.6.0</version>
                 <configuration>
+                    <toolhome>${java.home}</toolhome>
                     <name>Dev Cleaner Pro</name>
                     <appVersion>1.0.1</appVersion>
                     <vendor>kenTom</vendor>
@@ -163,15 +181,23 @@
                     <input>${project.build.directory}</input>
                     <destination>${project.build.directory}/jpackage</destination>
 
+                    <!-- Use JavaFX jlink runtime -->
+                    <runtimeImage>${project.build.directory}/image</runtimeImage>
+
                     <!-- macOS settings -->
                     <macPackageIdentifier>com.kentom.devcleaner</macPackageIdentifier>
                     <macPackageName>Dev Cleaner Pro</macPackageName>
-<!--                    <packageType>dmg</packageType>-->
+                    <packageType>dmg</packageType>
                     <macSign>false</macSign>
                     <macBundleSigningPrefix></macBundleSigningPrefix>
 
+                    <!-- Create Universal binary -->
+                    <javaOptions>
+                        <javaOption>-Dapple.awt.UIElement=true</javaOption>
+                    </javaOptions>
+
                     <!-- Use custom runtime -->
-                    <runtimeImage>${project.build.directory}/runtime</runtimeImage>
+                    <!-- <runtimeImage>${project.build.directory}/runtime</runtimeImage> -->
 
                     <resourceDir>src/main/deploy/package/macos</resourceDir>
                 </configuration>

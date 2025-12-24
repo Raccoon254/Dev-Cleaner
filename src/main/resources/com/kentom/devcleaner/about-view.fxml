@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.Region?>
+
+<ScrollPane fitToWidth="true" styleClass="scroll-pane"
+            xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.kentom.devcleaner.AboutController">
+    <VBox fx:id="aboutRoot" styleClass="about-container" alignment="CENTER" spacing="40">
+        <padding>
+            <Insets bottom="60.0" left="60.0" right="60.0" top="60.0"/>
+        </padding>
+
+        <!-- Top Spacer -->
+        <Region prefHeight="20"/>
+
+        <!-- App Logo/Icon with shadow effect -->
+        <VBox alignment="CENTER" spacing="8">
+            <ImageView fx:id="appIcon" fitHeight="140" fitWidth="140" preserveRatio="true" styleClass="about-app-icon">
+                <Image url="@icons/app-icon.png"/>
+            </ImageView>
+        </VBox>
+
+        <!-- App Info Section -->
+        <VBox alignment="CENTER" spacing="12" styleClass="about-info-section">
+            <Label styleClass="about-title" text="DevCleaner"/>
+            <Label styleClass="about-subtitle" text="Clean up your development projects with ease"/>
+            <HBox alignment="CENTER" spacing="8">
+                <Label styleClass="about-version" fx:id="versionLabel" text="v1.0"/>
+                <Label styleClass="about-version-separator" text="•"/>
+                <Label styleClass="about-platform-label" text="JavaFX Edition"/>
+            </HBox>
+        </VBox>
+
+        <!-- Platform & Build Info Section -->
+        <VBox alignment="CENTER" spacing="16" styleClass="about-details-section">
+            <VBox alignment="CENTER" spacing="6">
+                <Label styleClass="about-section-title" text="Platform"/>
+                <Label styleClass="about-detail-text" fx:id="platformLabel" text="macOS 14.0 (arm64)" wrapText="true" maxWidth="500"/>
+            </VBox>
+
+            <VBox alignment="CENTER" spacing="6">
+                <Label styleClass="about-section-title" text="Build"/>
+                <Label styleClass="about-detail-text" fx:id="buildInfoLabel" text="Java 23 • JavaFX 21" wrapText="true" maxWidth="500"/>
+            </VBox>
+        </VBox>
+
+        <!-- Spacer -->
+        <Region VBox.vgrow="ALWAYS"/>
+
+        <!-- Footer Section -->
+        <VBox alignment="CENTER" spacing="8" style="-fx-padding: 30 0 0 0;">
+            <Label styleClass="about-footer" text="A modern tool for managing development workspace"/>
+            <HBox alignment="CENTER" spacing="6">
+                <Label styleClass="about-footer-small" text="Built with"/>
+                <Label styleClass="about-footer-brand" text="❤️"/>
+                <Label styleClass="about-footer-small" text="using JavaFX"/>
+            </HBox>
+        </VBox>
+    </VBox>
+</ScrollPane>

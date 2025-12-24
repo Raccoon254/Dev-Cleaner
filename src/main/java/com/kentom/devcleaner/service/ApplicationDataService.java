@@ -72,6 +72,106 @@ public class ApplicationDataService {
         refreshData();
     }
 
+    // Fast initialization - load projects without Git caching
+    public void initializeDataAsync() {
+        if (initialLoadComplete) {
+            LogManager.log("Data already initialized, skipping...");
+            return;
+        }
+
+        LogManager.log("Initializing application data (fast mode)...");
+        loading.set(true);
+        notifyLoadingStatusListeners("Loading projects...");
+
+        Task<List<Project>> loadTask = new Task<List<Project>>() {
+            @Override
+            protected List<Project> call() throws Exception {
+                // Load from cache (fast - no Git operations)
+                List<Project> loadedProjects = ProjectCache.loadProjects();
+                return loadedProjects;
+            }
+
+            @Override
+            protected void succeeded() {
+                List<Project> loadedProjects = getValue();
+
+                // Update the cached data
+                projects.clear();
+                projects.addAll(loadedProjects);
+                lastRefresh = LocalDateTime.now();
+                initialLoadComplete = true;
+                loading.set(false);
+
+                LogManager.log("Fast data load completed. Loaded " + projects.size() + " projects.");
+
+                // Notify listeners - UI can now display
+                notifyDataChangeListeners();
+                notifyLoadingStatusListeners("Projects loaded");
+
+                // NOW start background Git info caching (non-blocking)
+                if (!loadedProjects.isEmpty()) {
+                    cacheGitInfoInBackground(loadedProjects);
+                }
+            }
+
+            @Override
+            protected void failed() {
+                loading.set(false);
+                initialLoadComplete = true;
+                LogManager.log("Data load failed: " + getException().getMessage());
+
+                projects.clear();
+                lastRefresh = LocalDateTime.now();
+
+                notifyDataChangeListeners();
+                notifyLoadingStatusListeners("Failed to load data");
+            }
+        };
+
+        Thread loadThread = new Thread(loadTask);
+        loadThread.setDaemon(true);
+        loadThread.start();
+    }
+
+    // Background Git info caching (doesn't block UI)
+    private void cacheGitInfoInBackground(List<Project> projectList) {
+        Task<Void> gitCacheTask = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                LogManager.log("Starting background Git info caching for " + projectList.size() + " projects...");
+
+                for (int i = 0; i < projectList.size(); i++) {
+                    Project project = projectList.get(i);
+                    try {
+                        project.getGitInfo(); // This caches Git info
+                    } catch (Exception e) {
+                        // Ignore individual project errors
+                        LogManager.log("Failed to cache Git info for " + project.getName() + ": " + e.getMessage());
+                    }
+
+                    // Small delay to avoid CPU spike
+                    if (i % 10 == 0 && i > 0) {
+                        Thread.sleep(50);
+                    }
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                LogManager.log("Background Git info caching completed");
+                // Refresh UI to show Git info now that it's cached
+                notifyDataChangeListeners();
+            }
+        };
+
+        Thread gitThread = new Thread(gitCacheTask);
+        gitThread.setDaemon(true);
+        gitThread.setPriority(Thread.MIN_PRIORITY); // Low priority background task
+        gitThread.start();
+    }
+
     // Refresh data from cache/disk (manual or timer-based)
     public void refreshData() {
         if (loading.get()) {

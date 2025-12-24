@@ -5,54 +5,22 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.io.IOException;
 import java.util.Objects;
 
 public class DevCleanerApp extends Application {
-    
+
     private Stage primaryStage;
-    private Stage splashStage;
-    
+
     @Override
     public void start(Stage stage) throws IOException {
         this.primaryStage = stage;
-        
-        // Show splash screen first
-        showSplashScreen();
-    }
-    
-    private void showSplashScreen() throws IOException {
-        // Load splash screen
-        FXMLLoader splashLoader = new FXMLLoader(DevCleanerApp.class.getResource("splash-screen.fxml"));
-        Parent splashRoot = splashLoader.load();
-        SplashController splashController = splashLoader.getController();
-        
-        // Create splash stage
-        splashStage = new Stage();
-        splashStage.setTitle("DevCleaner");
-        splashStage.initStyle(StageStyle.UNDECORATED); // No window decorations
-        splashStage.setResizable(false);
-        splashStage.setAlwaysOnTop(true);
-        
-        // Add app icons to splash stage
-        addAppIcons(splashStage);
-        
-        // Create splash scene with better dimensions
-        Scene splashScene = new Scene(splashRoot, 600, 400);
-        splashScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("styles.css")).toExternalForm());
-        
-        splashStage.setScene(splashScene);
-        splashStage.centerOnScreen();
-        splashStage.show();
-        
-        // Set callback to load main application when splash is complete
-        splashController.setOnLoadComplete(this::showMainApplication);
-        
-        // Start the loading process
-        splashController.startLoading();
+
+        // Show main application directly (skip splash screen)
+        showMainApplication();
     }
     
     private void showMainApplication() {
@@ -61,25 +29,32 @@ public class DevCleanerApp extends Application {
             FXMLLoader mainLoader = new FXMLLoader(DevCleanerApp.class.getResource("main-view.fxml"));
             Parent mainRoot = mainLoader.load();
             Scene mainScene = new Scene(mainRoot, 1380, 900);
-            
+
+            // Set dark background immediately to prevent white screen
+            mainScene.setFill(Color.rgb(12, 12, 12)); // #0C0C0C
+
+            // Apply stylesheet immediately
+            mainScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("styles.css")).toExternalForm());
+
             // Configure primary stage
             addAppIcons(primaryStage);
             primaryStage.setTitle("Dev Cleaner");
             primaryStage.setMinWidth(900);
             primaryStage.setMinHeight(650);
             primaryStage.setScene(mainScene);
-            
+
             // Start maximized
             //primaryStage.setMaximized(true);
-            
-            // Show main application and hide splash
+
+            // Force CSS application before showing
+            mainRoot.applyCss();
+            mainRoot.layout();
+
+            // Show main application after everything is ready
             primaryStage.show();
-            splashStage.close();
-            
+
         } catch (IOException e) {
             e.printStackTrace();
-            // If main app fails to load, at least close splash screen
-            splashStage.close();
         }
     }
     

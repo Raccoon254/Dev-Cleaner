@@ -30,21 +30,14 @@
     </VBox>
     
     <!-- Main Content -->
-    <VBox fx:id="mainContentBox" spacing="20.0">
+    <VBox fx:id="mainContentBox" spacing="0">
         <ScrollPane fitToWidth="true" styleClass="scroll-pane" VBox.vgrow="ALWAYS">
-            <VBox styleClass="dashboard-container" spacing="30">
-                
+            <VBox styleClass="dashboard-container" spacing="40">
+
                 <!-- Dashboard Header -->
-                <VBox styleClass="dashboard-header" spacing="12">
-                    <HBox alignment="CENTER_LEFT" spacing="15">
-                        <ImageView fitHeight="32" fitWidth="32" preserveRatio="true" styleClass="dashboard-icon">
-                            <Image url="@icons/dash.png"/>
-                        </ImageView>
-                        <VBox spacing="2">
-                            <Label styleClass="dashboard-title" text="DevCleaner Dashboard"/>
-                            <Label styleClass="dashboard-subtitle" fx:id="lastUpdatedLabel" text="Last updated: Now"/>
-                        </VBox>
-                    </HBox>
+                <VBox styleClass="dashboard-header" spacing="8">
+                    <Label styleClass="dashboard-title" text="Dashboard"/>
+                    <Label styleClass="dashboard-subtitle" fx:id="lastUpdatedLabel" text="Last updated: Now"/>
                 </VBox>
                 
                 <!-- Primary Stats Row -->
@@ -57,59 +50,67 @@
                     </columnConstraints>
                     
                     <!-- Total Projects Card -->
-                    <VBox styleClass="primary-stat-card" spacing="15" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                    <VBox styleClass="primary-stat-card" spacing="20" GridPane.columnIndex="0" GridPane.rowIndex="0">
                         <HBox alignment="CENTER_LEFT" spacing="12">
-                            <ImageView fitHeight="24" fitWidth="24" preserveRatio="true" styleClass="stat-icon">
-                                <Image url="@icons/box.png"/>
-                            </ImageView>
-                            <VBox spacing="2">
-                                <Label styleClass="stat-title" text="Total Projects"/>
-                                <Label fx:id="projectCountLabel" styleClass="primary-stat-value" text="0"/>
+                            <VBox styleClass="stat-icon-container projects-icon">
+                                <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
+                                    <Image url="@icons/box.png"/>
+                                </ImageView>
                             </VBox>
+                            <Label styleClass="stat-title" text="Projects"/>
                         </HBox>
-                        <Label fx:id="projectTrendLabel" styleClass="stat-trend" text=""/>
+                        <VBox spacing="6">
+                            <Label fx:id="projectCountLabel" styleClass="primary-stat-value" text="0"/>
+                            <Label fx:id="projectTrendLabel" styleClass="stat-trend" text=""/>
+                        </VBox>
                     </VBox>
                     
                     <!-- Disk Usage Card -->
-                    <VBox styleClass="primary-stat-card" spacing="15" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                    <VBox styleClass="primary-stat-card" spacing="20" GridPane.columnIndex="1" GridPane.rowIndex="0">
                         <HBox alignment="CENTER_LEFT" spacing="12">
-                            <ImageView fitHeight="24" fitWidth="24" preserveRatio="true" styleClass="stat-icon">
-                                <Image url="@icons/disk.png"/>
-                            </ImageView>
-                            <VBox spacing="2">
-                                <Label styleClass="stat-title" text="Total Usage"/>
-                                <Label fx:id="diskUsageLabel" styleClass="primary-stat-value" text="N/A"/>
+                            <VBox styleClass="stat-icon-container disk-icon">
+                                <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
+                                    <Image url="@icons/disk.png"/>
+                                </ImageView>
                             </VBox>
+                            <Label styleClass="stat-title" text="Disk Usage"/>
                         </HBox>
-                        <ProgressBar fx:id="diskUsageProgress" styleClass="usage-progress" prefWidth="200" progress="0"/>
+                        <VBox spacing="10">
+                            <Label fx:id="diskUsageLabel" styleClass="primary-stat-value" text="N/A"/>
+                            <ProgressBar fx:id="diskUsageProgress" styleClass="usage-progress" maxWidth="Infinity" progress="0"/>
+                        </VBox>
                     </VBox>
                     
                     <!-- Cleanable Space Card -->
-                    <VBox styleClass="primary-stat-card" spacing="15" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                    <VBox styleClass="primary-stat-card" spacing="20" GridPane.columnIndex="2" GridPane.rowIndex="0">
                         <HBox alignment="CENTER_LEFT" spacing="12">
-                            <ImageView fitHeight="24" fitWidth="24" preserveRatio="true" styleClass="stat-icon">
-                                <Image url="@icons/trash.png"/>
-                            </ImageView>
-                            <VBox spacing="2">
-                                <Label styleClass="stat-title" text="Cleanable"/>
-                                <Label fx:id="cleanableSpaceLabel" styleClass="primary-stat-value" text="0 GB"/>
+                            <VBox styleClass="stat-icon-container clean-icon">
+                                <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
+                                    <Image url="@icons/trash.png"/>
+                                </ImageView>
                             </VBox>
+                            <Label styleClass="stat-title" text="Cleanable"/>
                         </HBox>
-                        <Label fx:id="potentialSavingsLabel" styleClass="stat-savings" text="Potential savings"/>
+                        <VBox spacing="6">
+                            <Label fx:id="cleanableSpaceLabel" styleClass="primary-stat-value" text="0 GB"/>
+                            <Label fx:id="potentialSavingsLabel" styleClass="stat-savings" text="Potential savings"/>
+                        </VBox>
                     </VBox>
                     
                     <!-- Git Projects Card -->
-                    <VBox styleClass="primary-stat-card" spacing="15" GridPane.columnIndex="3" GridPane.rowIndex="0">
+                    <VBox styleClass="primary-stat-card" spacing="20" GridPane.columnIndex="3" GridPane.rowIndex="0">
                         <HBox alignment="CENTER_LEFT" spacing="12">
-                            <ImageView fitHeight="24" fitWidth="24" preserveRatio="true" styleClass="stat-icon">
-                                <Image url="@icons/github.png"/>
-                            </ImageView>
-                            <VBox spacing="2">
-                                <Label styleClass="stat-title" text="Git Repos"/>
-                                <Label fx:id="gitProjectsLabel" styleClass="primary-stat-value" text="0"/>
+                            <VBox styleClass="stat-icon-container git-icon">
+                                <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
+                                    <Image url="@icons/github.png"/>
+                                </ImageView>
                             </VBox>
+                            <Label styleClass="stat-title" text="Git Repos"/>
                         </HBox>
-                        <Label fx:id="gitPercentageLabel" styleClass="stat-percentage" text="0% of projects"/>
+                        <VBox spacing="6">
+                            <Label fx:id="gitProjectsLabel" styleClass="primary-stat-value" text="0"/>
+                            <Label fx:id="gitPercentageLabel" styleClass="stat-percentage" text="0% of projects"/>
+                        </VBox>
                     </VBox>
                 </GridPane>
                 

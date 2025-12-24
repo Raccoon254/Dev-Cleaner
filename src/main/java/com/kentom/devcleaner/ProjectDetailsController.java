@@ -255,6 +255,8 @@ public class ProjectDetailsController {
                 String relativePath = project.getPath().relativize(item.getPath()).toString();
                 Label pathLabel = new Label(relativePath);
                 pathLabel.getStyleClass().add("item-path");
+                pathLabel.setMaxWidth(Double.MAX_VALUE);
+                pathLabel.setAlignment(Pos.CENTER_LEFT);
                 allPathLabels.add(pathLabel);
             }
 
@@ -268,6 +270,8 @@ public class ProjectDetailsController {
             if (itemGroup.size() > maxVisible) {
                 Button showMoreButton = new Button("Show more (" + (itemGroup.size() - maxVisible) + " more)");
                 showMoreButton.getStyleClass().add("show-more-button");
+                showMoreButton.setMaxWidth(Double.MAX_VALUE);
+                showMoreButton.setAlignment(Pos.CENTER_LEFT);
                 showMoreButton.setOnAction(e -> {
                     pathsPane.getChildren().clear();
                     for (Label label : allPathLabels) {
@@ -275,6 +279,8 @@ public class ProjectDetailsController {
                     }
                     Button showLessButton = new Button("Show less");
                     showLessButton.getStyleClass().add("show-less-button");
+                    showLessButton.setMaxWidth(Double.MAX_VALUE);
+                    showLessButton.setAlignment(Pos.CENTER_LEFT);
                     showLessButton.setOnAction(ev -> {
                         pathsPane.getChildren().clear();
                         for (int i = 0; i < Math.min(maxVisible, allPathLabels.size()); i++) {
@@ -509,6 +515,10 @@ public class ProjectDetailsController {
     public void handleScanProject(ActionEvent actionEvent) {
     }
 }
+
+
+
+
 
 
 

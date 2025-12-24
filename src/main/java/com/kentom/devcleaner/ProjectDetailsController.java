@@ -17,6 +17,7 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
@@ -237,18 +238,56 @@ public class ProjectDetailsController {
         
         // Path info
         if (itemGroup.size() == 1) {
-            Label pathLabel = new Label(primary.getPath().toString());
+            String relativePath = project.getPath().relativize(primary.getPath()).toString();
+            Label pathLabel = new Label(relativePath);
             pathLabel.getStyleClass().add("item-path");
             card.getChildren().add(pathLabel);
         } else {
-            // Show all paths for duplicates
-            VBox pathsBox = new VBox(2);
+            // Show up to 5 paths for duplicates in a responsive grid
+            TilePane pathsPane = new TilePane();
+            pathsPane.setPrefColumns(2);
+            pathsPane.setHgap(10);
+            pathsPane.setVgap(5);
+            pathsPane.getStyleClass().add("paths-grid");
+
+            List<Label> allPathLabels = new ArrayList<>();
             for (CleanableItem item : itemGroup) {
-                Label pathLabel = new Label(item.getPath().toString());
+                String relativePath = project.getPath().relativize(item.getPath()).toString();
+                Label pathLabel = new Label(relativePath);
                 pathLabel.getStyleClass().add("item-path");
-                pathsBox.getChildren().add(pathLabel);
+                allPathLabels.add(pathLabel);
             }
-            card.getChildren().add(pathsBox);
+
+            // Add first 5
+            int maxVisible = 5;
+            for (int i = 0; i < Math.min(maxVisible, allPathLabels.size()); i++) {
+                pathsPane.getChildren().add(allPathLabels.get(i));
+            }
+
+            // If more than 5, add a "Show more" button
+            if (itemGroup.size() > maxVisible) {
+                Button showMoreButton = new Button("Show more (" + (itemGroup.size() - maxVisible) + " more)");
+                showMoreButton.getStyleClass().add("show-more-button");
+                showMoreButton.setOnAction(e -> {
+                    pathsPane.getChildren().clear();
+                    for (Label label : allPathLabels) {
+                        pathsPane.getChildren().add(label);
+                    }
+                    Button showLessButton = new Button("Show less");
+                    showLessButton.getStyleClass().add("show-less-button");
+                    showLessButton.setOnAction(ev -> {
+                        pathsPane.getChildren().clear();
+                        for (int i = 0; i < Math.min(maxVisible, allPathLabels.size()); i++) {
+                            pathsPane.getChildren().add(allPathLabels.get(i));
+                        }
+                        pathsPane.getChildren().add(showMoreButton);
+                    });
+                    pathsPane.getChildren().add(showLessButton);
+                });
+                pathsPane.getChildren().add(showMoreButton);
+            }
+
+            card.getChildren().add(pathsPane);
         }
         
         return card;
@@ -470,3 +509,6 @@ public class ProjectDetailsController {
     public void handleScanProject(ActionEvent actionEvent) {
     }
 }
+
+
+

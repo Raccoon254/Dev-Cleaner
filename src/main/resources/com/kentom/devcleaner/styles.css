@@ -791,10 +791,6 @@
 }
 
 /* --- PROJECT DETAILS VIEW --- */
-.details-pane {
-    -fx-background-color: rgba(23, 23, 23, 0.85);
-    -fx-backdrop-filter: blur(20px);
-}
 
 .back-button {
     -fx-background-color: transparent;
@@ -1782,4 +1778,8 @@
     -fx-border-color: #0A84FF;
     -fx-scale-x: 1.01;
     -fx-scale-y: 1.01;
+}
+
+.transparent-scroll-pane {
+    -fx-background-color: #0C0C0CFF;
 }
